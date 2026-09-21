@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiteFix — Type in your website. See it rebuilt. $299.</title>
+<meta name="description" content="Type in your web address and watch it get rebuilt modern — your name, your services, a big call button. $299, done for you.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#111014; --bg2:#18171c; --card:#1e1d23; --line:#2c2b33;
+  --ink:#f4f1e8; --muted:#a8a29a; --dim:#6f6a61;
+  --gold:#e8a93c; --gold-d:#c98a24; --green:#3fa46a;
+  --red:#e05a4e;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:0 22px}
+h1,h2,h3,.disp{font-family:'Oswald','Arial Narrow',Impact,sans-serif;font-weight:700;letter-spacing:.01em;line-height:1.08;text-transform:uppercase}
+
+/* ---------- top bar ---------- */
+.topbar{border-bottom:1px solid var(--line);background:rgba(17,16,20,.9);position:sticky;top:0;z-index:50;backdrop-filter:blur(6px)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:14px;padding-bottom:14px}
+.brand{font-family:'Oswald',sans-serif;font-weight:700;font-size:22px;letter-spacing:.04em;text-transform:uppercase}
+.brand span{color:var(--gold)}
+.topbar .phone{color:var(--ink);text-decoration:none;font-weight:700;font-size:15px;border:1px solid var(--line);padding:9px 16px;border-radius:8px}
+.topbar .phone:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ---------- hero ---------- */
+.hero{padding:74px 0 30px;text-align:center}
+.eyebrow{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:18px}
+.hero h1{font-size:clamp(38px,6.4vw,72px);max-width:900px;margin:0 auto 18px}
+.hero h1 .u{color:var(--gold)}
+.lede{color:var(--muted);font-size:clamp(16px,2.2vw,20px);max-width:640px;margin:0 auto 34px}
+.lede strong{color:var(--ink)}
+
+.urlbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;max-width:720px;margin:0 auto;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.urlrow{display:flex;gap:10px}
+.urlrow input{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);font-size:17px;padding:16px 18px;min-width:0}
+.urlrow input:focus{outline:none;border-color:var(--gold)}
+.urlrow input::placeholder{color:var(--dim)}
+.btn{display:inline-block;background:var(--gold);color:#171207;font-weight:800;font-size:17px;border:none;border-radius:10px;padding:16px 28px;cursor:pointer;white-space:nowrap;text-transform:uppercase;letter-spacing:.03em;font-family:'Oswald',sans-serif}
+.btn:hover{background:var(--gold-d)}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);font-size:14px;padding:12px 20px}
+.btn.ghost:hover{color:var(--ink);border-color:var(--dim)}
+.samples{margin-top:16px;font-size:14px;color:var(--dim)}
+.samples button{background:none;border:none;color:var(--gold);font-size:14px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 2px}
+.nosite{margin-top:14px}
+.nosite button{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.nosite button:hover{color:var(--ink)}
+
+/* manual fallback panel */
+.manual{display:none;background:var(--card);border:1px dashed var(--dim);border-radius:16px;padding:26px;max-width:720px;margin:18px auto 0;text-align:left}
+.manual.open{display:block}
+.manual h3{font-size:20px;margin-bottom:6px}
+.manual p{color:var(--muted);font-size:14px;margin-bottom:18px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.fgrid .full{grid-column:1/-1}
+.field label{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.field input,.field select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);font-size:16px;padding:13px 14px}
+.field input:focus,.field select:focus{outline:none;border-color:var(--gold)}
+
+/* ---------- loader ---------- */
+.loader{display:none;padding:70px 0;text-align:center}
+.loader.open{display:block}
+.spin{width:54px;height:54px;border:5px solid var(--line);border-top-color:var(--gold);border-radius:50%;margin:0 auto 22px;animation:sp 0.9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.loadmsg{font-family:'Oswald',sans-serif;font-size:22px;text-transform:uppercase;letter-spacing:.03em}
+.loadsub{color:var(--dim);font-size:14px;margin-top:8px}
+
+/* ---------- results ---------- */
+.results{display:none;padding:30px 0 10px}
+.results.open{display:block}
+.reshead{text-align:center;margin-bottom:8px}
+.reshead h2{font-size:clamp(30px,4.6vw,50px);margin-bottom:10px}
+.reshead h2 .u{color:var(--gold)}
+.reshead p{color:var(--muted);max-width:620px;margin:0 auto 4px}
+.reshead .siteurl{color:var(--gold);font-weight:600;word-break:break-all}
+
+/* style switcher */
+.switcher{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:26px 0 18px;align-items:center}
+.switcher .lbl{font-size:12px;font-weight:800;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-right:4px}
+.swbtn{background:var(--card);border:1px solid var(--line);color:var(--muted);font-weight:700;font-size:14px;padding:10px 18px;border-radius:999px;cursor:pointer}
+.swbtn.on{background:var(--gold);border-color:var(--gold);color:#171207}
+
+/* compare */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:18px;position:relative;margin-bottom:8px}
+.pane{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.pane .phead{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--line)}
+.ptag{font-family:'Oswald',sans-serif;font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+.pane.before .ptag{color:var(--red)}
+.pane.after .ptag{color:var(--green)}
+.pane .phead .pnote{font-size:12px;color:var(--dim)}
+.pane iframe{width:100%;height:640px;border:0;background:#fff;flex:1}
+.vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--gold);color:#171207;font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,0,0,.5);z-index:2}
+.cmpnote{text-align:center;color:var(--dim);font-size:13px;margin:10px 0 30px;max-width:700px;margin-left:auto;margin-right:auto}
+.mobiletabs{display:none;justify-content:center;gap:8px;margin:0 0 14px}
+
+/* ---------- offer / CTA ---------- */
+.offer{background:linear-gradient(180deg,#1c1a12,#141310);border:1px solid #3a2f18;border-radius:18px;padding:44px 34px;text-align:center;margin:26px 0 60px}
+.offer .price{font-family:'Oswald',sans-serif;font-size:clamp(52px,8vw,88px);font-weight:700;color:var(--gold);line-height:1}
+.offer h2{font-size:clamp(26px,4vw,40px);margin:6px 0 10px}
+.offer .sub{color:var(--muted);max-width:560px;margin:0 auto 22px}
+.inclist{list-style:none;text-align:left;max-width:520px;margin:0 auto 28px;display:grid;gap:10px}
+.inclist li{color:var(--ink);font-size:16px;padding-left:30px;position:relative}
+.inclist li::before{content:"";position:absolute;left:2px;top:7px;width:14px;height:8px;border-left:3px solid var(--green);border-bottom:3px solid var(--green);transform:rotate(-45deg)}
+.leadform{max-width:520px;margin:0 auto}
+.leadform .frow{display:flex;gap:10px;margin-bottom:10px}
+.leadform input{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);font-size:16px;padding:15px 16px;min-width:0}
+.leadform input:focus{outline:none;border-color:var(--gold)}
+.leadform .btn{width:100%;font-size:19px;padding:17px}
+.fineprint{color:var(--dim);font-size:13px;margin-top:12px}
+.leadsuccess{display:none;background:#12281a;border:1px solid #1f4d2e;border-radius:14px;padding:30px;max-width:520px;margin:0 auto}
+.leadsuccess.open{display:block}
+.leadsuccess h3{color:var(--green);font-size:24px;margin-bottom:8px}
+.leadsuccess p{color:var(--muted)}
+
+/* how it works strip */
+.how{padding:34px 0 60px}
+.how h2{text-align:center;font-size:clamp(24px,3.6vw,36px);margin-bottom:26px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
+.step .n{font-family:'Oswald',sans-serif;font-size:30px;color:var(--gold);font-weight:700}
+.step h3{font-size:17px;margin:8px 0 6px}
+.step p{color:var(--muted);font-size:14px}
+
+footer{border-top:1px solid var(--line);padding:30px 0 44px;color:var(--dim);font-size:13px;text-align:center}
+footer .brand{font-size:18px;margin-bottom:8px;display:block}
+.restart{display:block;margin:26px auto 0}
+
+/* error toast */
+.err{display:none;background:#2b1512;border:1px solid #5c2620;color:#f0b9b2;border-radius:12px;padding:16px 20px;max-width:720px;margin:18px auto 0;font-size:15px}
+.err.open{display:block}
+.err button{background:none;border:none;color:var(--gold);text-decoration:underline;cursor:pointer;font-size:15px;padding:0}
+
+@media(max-width:860px){
+  .cmp{grid-template-columns:1fr}
+  .cmp .pane.before{display:none}
+  .cmp.showbefore .pane.before{display:flex}
+  .cmp.showbefore .pane.after{display:none}
+  .vs{display:none}
+  .mobiletabs{display:flex}
+  .pane iframe{height:560px}
+  .urlrow{flex-direction:column}
+  .steps{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr}
+  .leadform .frow{flex-direction:column}
+  .offer{padding:34px 20px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand">Site<span>Fix</span></div>
+    <a class="phone" href="tel:+12257696828">(225) 769-6828</a>
+  </div>
+</div>
+
+<!-- ============ STEP 1: INPUT ============ -->
+<section class="wrap" id="step-input">
+  <div class="hero">
+    <div class="eyebrow">For Louisiana small business owners</div>
+    <h1>Your website is costing you <span class="u">customers.</span></h1>
+    <p class="lede">Type in your web address. In about 20 seconds we'll show you what your site <strong>could</strong> look like — rebuilt modern, with your name, your services, and a big call button. <strong>Free to look.</strong></p>
+
+    <div class="urlbox">
+      <div class="urlrow">
+        <input id="urlInput" type="text" inputmode="url" placeholder="yourwebsite.com" autocomplete="off" spellcheck="false">
+        <button class="btn" id="goBtn">Rebuild my site &rarr;</button>
+      </div>
+      <div class="samples">No URL handy? Try a real one: <button id="sample1">cranky plumber site</button> &middot; <button id="sample2">famous oyster bar</button></div>
+      <div class="nosite"><button id="noSiteBtn">Don't have a website? Type your business name instead &darr;</button></div>
+    </div>
+
+    <div class="manual" id="manualPanel">
+      <h3>No site? No problem.</h3>
+      <p>Give us the basics and we'll mock one up from scratch. This is exactly what we'd build you.</p>
+      <div class="fgrid">
+        <div class="field full"><label>Business name</label><input id="mName" type="text" placeholder="e.g. Boudreaux's Auto Repair"></div>
+        <div class="field"><label>Industry</label>
+          <select id="mIndustry">
+            <option value="trades">Trades / Home services</option>
+            <option value="restaurant">Restaurant / Food</option>
+            <option value="professional">Medical / Legal / Office</option>
+          </select>
+        </div>
+        <div class="field"><label>Phone (optional)</label><input id="mPhone" type="tel" placeholder="(225) 555-0000"></div>
+        <div class="field full"><label>City (optional)</label><input id="mCity" type="text" placeholder="Baton Rouge"></div>
+      </div>
+      <button class="btn" id="manualGo">Build my mockup &rarr;</button>
+    </div>
+
+    <div class="err" id="errBox"></div>
+  </div>
+
+  <div class="loader" id="loader">
+    <div class="spin"></div>
+    <div class="loadmsg" id="loadMsg">Pulling up your site&hellip;</div>
+    <div class="loadsub">Hang tight — this takes about 20 seconds.</div>
+  </div>
+
+  <div class="how">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>You type your address</h3><p>We read your current site — your name, your services, your phone number. Nothing to install, nothing to sign.</p></div>
+      <div class="step"><div class="n">2</div><h3>We rebuild it live</h3><p>Same business, brand-new website. Modern design, works on phones, big tap-to-call button. Side by side with your old one.</p></div>
+      <div class="step"><div class="n">3</div><h3>You say the word</h3><p>Like what you see? <strong>$299</strong> and it's yours — with your photos, your words, ready in about a week.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STEP 2: RESULTS ============ -->
+<section class="wrap results" id="step-results">
+  <div class="reshead">
+    <div class="eyebrow">Here's the damage — and the fix</div>
+    <h2>Same business.<br><span class="u">Different website.</span></h2>
+    <p>We read <span class="siteurl" id="resUrl"></span> and rebuilt it the way it should've looked all along.</p>
+  </div>
+
+  <div class="mobiletabs">
+    <button class="swbtn on" id="tabAfter">AFTER — the rebuild</button>
+    <button class="swbtn" id="tabBefore">BEFORE — their site</button>
+  </div>
+
+  <div class="cmp" id="cmp">
+    <div class="pane before">
+      <div class="phead"><span class="ptag">Before</span><span class="pnote">what customers see today</span></div>
+      <iframe id="beforeFrame" title="Current website" loading="lazy"></iframe>
+    </div>
+    <div class="pane after">
+      <div class="phead"><span class="ptag">After</span><span class="pnote">the $299 rebuild</span></div>
+      <iframe id="afterFrame" title="Rebuilt website preview" sandbox="allow-same-origin allow-scripts"></iframe>
+    </div>
+    <div class="vs">VS</div>
+  </div>
+
+  <div class="switcher">
+    <span class="lbl">Try a different style:</span>
+    <button class="swbtn" data-variant="trades">Trades</button>
+    <button class="swbtn" data-variant="restaurant">Restaurant</button>
+    <button class="swbtn" data-variant="professional">Professional</button>
+  </div>
+
+  <p class="cmpnote" id="beforeNote">Note: some older sites refuse to load inside a preview window. If the "before" side is blank, that's their site blocking it — which honestly tells you something too.</p>
+
+  <div class="offer" id="offer">
+    <div class="price">$299</div>
+    <h2>Want this live?</h2>
+    <p class="sub">Done for you. Your photos, your words, your phone number ringing. Ready in about a week. One flat price — no monthly anything.</p>
+    <ul class="inclist">
+      <li>Modern design that actually works on phones</li>
+      <li>Big tap-to-call button customers can't miss</li>
+      <li>Your services, written plain so people get it</li>
+      <li>Shows up on Google when locals search</li>
+      <li>You own it outright — no rent, no subscription</li>
+    </ul>
+    <div class="leadform" id="leadForm">
+      <div class="frow">
+        <input id="leadName" type="text" placeholder="Your name" autocomplete="name">
+        <input id="leadPhone" type="tel" placeholder="Cell number" autocomplete="tel">
+      </div>
+      <button class="btn" id="leadGo">Call me about my $299 rebuild</button>
+      <div class="fineprint">No spam, no robocalls. One human calls you back within one business day. That's it.</div>
+    </div>
+    <div class="leadsuccess" id="leadSuccess">
+      <h3>Got it.</h3>
+      <p id="leadSuccessMsg">We'll be in touch within one business day. Go run your business — we'll handle the website.</p>
+    </div>
+  </div>
+
+  <button class="btn ghost restart" id="restartBtn">&larr; Try another website</button>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="brand">Site<span style="color:var(--gold)">Fix</span></span>
+    <div>$299 website rebuilds for Louisiana small businesses. Built by a human in Baton Rouge, not a template farm.</div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   SiteFix — instant rebuild demo
+   NOTE (backend wiring): lead capture currently stores to
+   localStorage key "sitefix_leads". To go live, POST the lead
+   object to your endpoint where marked LEAD_BACKEND below.
+   ============================================================ */
+(function(){
+"use strict";
+
+/* ---------- tiny utils ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clean = s => String(s||"").replace(/\s+/g," ").trim();
+
+function normUrl(u){
+  u = clean(u);
+  if(!u) return "";
+  if(!/^https?:\/\//i.test(u)) u = "https://" + u;
+  return u;
+}
+function fmtPhone(p){
+  const d = String(p||"").replace(/\D/g,"");
+  const t = d.length===11 && d[0]==="1" ? d.slice(1) : d;
+  if(t.length===10) return "("+t.slice(0,3)+") "+t.slice(3,6)+"-"+t.slice(6);
+  return p;
+}
+function telHref(p){
+  const d = String(p||"").replace(/\D/g,"");
+  return "tel:+1" + (d.length===10 ? d : d.replace(/^1/,""));
+}
+
+/* ---------- fetch page HTML via public CORS proxies ---------- */
+async function fetchHtml(url){
+  const enc = encodeURIComponent(url);
+  const proxies = [
+    "https://api.allorigins.win/raw?url=" + enc,
+    "https://api.codetabs.com/v1/proxy?quest=" + enc
+  ];
+  let lastErr = null;
+  for(const p of proxies){
+    try{
+      const ctl = new AbortController();
+      const t = setTimeout(()=>ctl.abort(), 25000);
+      const r = await fetch(p, {signal: ctl.signal});
+      clearTimeout(t);
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      const txt = await r.text();
+      if(txt && txt.length > 800 && /<html/i.test(txt)) return txt;
+      throw new Error("empty/blocked response");
+    }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error("fetch failed");
+}
+
+/* ---------- extraction ---------- */
+const JUNK_NAV = /^(home|about|about us|contact|contact us|services|menu|blog|news|faq|faqs|privacy|privacy policy|terms|terms of service|sitemap|login|sign in|search|shop|cart|click here|read more|learn more|welcome)$/i;
+
+function extractData(html, url){
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const bodyText = clean(doc.body ? doc.body.innerText : "");
+  const data = { url, rawText: bodyText.slice(0, 6000) };
+
+  // business name: og:site_name -> title -> h1
+  let name = "";
+  const og = doc.querySelector('meta[property="og:site_name"]');
+  if(og && og.content) name = og.content;
+  if(!name){
+    let t = clean(doc.title || "");
+    t = t.split(/\s*[|–—:»]\s*/)[0];
+    t = t.replace(/^(welcome to|home\s*[-–]\s*)/i, "");
+    if(t && t.length > 2 && t.length < 70) name = t;
+  }
+  if(!name){
+    const h1 = doc.querySelector("h1");
+    if(h1) name = clean(h1.innerText).slice(0,60);
+  }
+  try{
+    if(!name || /^(home|welcome|index)$/i.test(name)){
+      const host = new URL(url).hostname.replace(/^www\./,"");
+      name = host.split(".")[0].replace(/[-_]/g," ");
+    }
+  }catch(e){}
+  data.name = name ? name.replace(/(^|[\s\-–—/])(\w)/g, (m, p, c) => p + c.toUpperCase()) : "Your Business";
+
+  // phone: prefer tel: links, else first US number in text
+  let phone = "";
+  const tel = doc.querySelector('a[href^="tel:"]');
+  if(tel) phone = tel.getAttribute("href").replace("tel:","");
+  if(!phone){
+    const m = bodyText.match(/(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/);
+    if(m) phone = m[0];
+  }
+  data.phone = phone ? fmtPhone(phone) : "";
+  data.phoneHref = phone ? telHref(phone) : "";
+
+  // services: nav links + headings, deduped, junk filtered
+  const found = [];
+  const seen = new Set();
+  const pushSvc = s => {
+    s = clean(s);
+    if(!s || s.length < 3 || s.length > 42) return;
+    if(JUNK_NAV.test(s)) return;
+    if(/\d{3}[-.)\s]/.test(s)) return; // phone-ish
+    const k = s.toLowerCase();
+    if(seen.has(k)) return;
+    seen.add(k); found.push(s);
+  };
+  doc.querySelectorAll("nav a, header a").forEach(a => pushSvc(a.innerText));
+  doc.querySelectorAll("h2, h3").forEach(h => pushSvc(h.innerText));
+  data.services = found.slice(0, 8);
+
+  // city / address hints
+  let city = "";
+  const cityM = bodyText.match(/\b(Baton Rouge|New Orleans|Lafayette|Denham Springs|Zachary|Central|Gonzales|Prairieville|Walker|Hammond|Slidell|Metairie|Kenner|Lake Charles|Shreveport|Monroe|Alexandria|Houma|Thibodaux)\b/i);
+  if(cityM) city = cityM[1];
+  const addrM = bodyText.match(/\d{2,6}\s+[A-Za-z0-9 .'-]{2,30}\s(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Dr|Drive|Ln|Lane|Hwy|Highway|Cir|Circle|Way|Pl|Place)\b/i);
+  data.city = city || "Baton Rouge";
+  data.address = addrM ? clean(addrM[0]) : "";
+
+  // hero image: og:image, else first content img (absolute urls only)
+  let img = "";
+  const ogi = doc.querySelector('meta[property="og:image"]');
+  if(ogi && ogi.content) img = ogi.content;
+  if(!img){
+    const im = doc.querySelector("main img, article img, .hero img, img");
+    if(im && im.src && /^https?:/i.test(im.src) && !/logo|icon|sprite/i.test(im.src)) img = im.src;
+  }
+  data.image = img || "";
+
+  // theme color hint
+  const tc = doc.querySelector('meta[name="theme-color"]');
+  data.themeColor = (tc && tc.content) || "";
+
+  return data;
+}
+
+/* ---------- industry detection ---------- */
+const INDUSTRY_KEYWORDS = {
+  restaurant: ["restaurant","grill","bar &","oyster","po-boy","poboy","seafood","pizza","cafe","café","diner","eatery","kitchen","catering","bistro","menu","brunch","crawfish","gumbo"],
+  professional: ["dental","dentist","medical","clinic","eye care","vision","lasik","optometry","therapy","physical therapy","law firm","attorney","lawyer","insurance","accounting","cpa","financial","real estate","church","bank"],
+  trades: ["plumb","hvac","air conditioning","heating","electric","roof","pest","lawn","landscap","handyman","auto repair","mechanic","transmission","tire","garage","weld","concrete","remodel","contractor","septic","generator","appliance repair"]
+};
+function detectIndustry(data){
+  const t = (data.name + " " + data.rawText).toLowerCase();
+  const score = {trades:0, restaurant:0, professional:0};
+  for(const k in INDUSTRY_KEYWORDS){
+    INDUSTRY_KEYWORDS[k].forEach(w => { if(t.includes(w)) score[k] += w.length > 6 ? 2 : 1; });
+  }
+  let best = "professional", bestS = 0;
+  for(const k in score){ if(score[k] > bestS){ bestS = score[k]; best = k; } }
+  return best;
+}
+
+/* default services when extraction comes up thin */
+const DEFAULT_SERVICES = {
+  trades: ["Repairs & Service Calls","Installations","Maintenance Plans","Free Estimates","Emergency Service","Upfront Pricing"],
+  restaurant: ["Dine-In","Takeout & To-Go","Catering","Daily Specials","Family Packs","Gift Cards"],
+  professional: ["Consultations","New Patients Welcome","Most Insurance Accepted","Evening Appointments","Second Opinions","Patient Resources"]
+};
+const SERVICE_BLURBS = {
+  "emergency service":"When it can't wait, we show up.",
+  "free estimates":"Know the price before we start. No surprises.",
+  "repairs & service calls":"Fixed right the first time, or we make it right.",
+  "dine-in":"Come hungry. Leave happy.",
+  "takeout & to-go":"Hot, fast, and packed right.",
+  "catering":"We feed the whole crew.",
+  "consultations":"Talk to a real person. Get straight answers.",
+  "new patients welcome":"Easy first visit. We'll take it from there."
+};
+function blurbFor(s){
+  const k = s.toLowerCase();
+  return SERVICE_BLURBS[k] || "Done right, priced fair, no runaround.";
+}
+
+/* ---------- pre-cached prospect data: instant demos, zero network ---------- */
+const PRESETS = {"bdplumbing.net":{"data":{"url":"http://www.bdplumbing.net/","rawText":"","name":"B&D Plumbing","phone":"(225) 273-4300","phoneHref":"tel:+12252734300","services":[],"city":"Baton Rouge","address":"979 O'Neal Ln, Baton Rouge, LA 70816","image":"","themeColor":""},"variant":"trades"},"dalesautorepair.net":{"data":{"url":"https://dalesautorepair.net/","rawText":"","name":"Dale's Auto Repair","phone":"(225) 274-0702","phoneHref":"tel:+12252740702","services":[],"city":"Baton Rouge","address":"","image":"","themeColor":""},"variant":"trades"},"philsoysterbar.com":{"data":{"url":"http://philsoysterbar.com/","rawText":"","name":"Phil's Oyster Bar","phone":"(225) 924-3045","phoneHref":"tel:+12259243045","services":[],"city":"Baton Rouge","address":"","image":"http://static1.squarespace.com/static/695ecd92fae40d407a3d1e94/t/695ede41e8e2080b9ad62e0b/1767824961172/Phils-Full-Color.png?format=1500w","themeColor":""},"variant":"restaurant"},"emc-eyes.com":{"data":{"url":"http://emc-eyes.com/","rawText":"","name":"The Eye Medical Center","phone":"(225) 766-7441","phoneHref":"tel:+12257667441","services":[],"city":"Baton Rouge","address":"","image":"","themeColor":""},"variant":"professional"},"poorboylloyds.com":{"data":{"url":"http://www.poorboylloyds.com/","rawText":"","name":"Poor Boy Lloyd's","phone":"","phoneHref":"","services":[],"city":"Baton Rouge","address":"","image":"http://www.poorboylloyds.com/uploads/7/0/9/6/70962529/pbl18_1_orig.jpg","themeColor":""},"variant":"restaurant"},"loopmechanical.com":{"data":{"url":"http://loopmechanical.com/","rawText":"","name":"Loop Mechanical","phone":"(225) 636-2725","phoneHref":"tel:+12256362725","services":[],"city":"Baton Rouge","address":"","image":"https://loopmechanical.com/wp-content/uploads/2021/11/LOOP-Website-_Sheet-Metal-Icon-e1649448132110.png","themeColor":"#065897"},"variant":"trades"},"corporategreen.us":{"data":{"url":"http://www.corporategreen.us/","rawText":"","name":"Corporate Green","phone":"","phoneHref":"","services":[],"city":"Baton Rouge","address":"","image":"https://www.corporategreen.us/uploads/1/3/3/4/13346261/brands-big-bark-tree-care_orig.png","themeColor":""},"variant":"professional"},"cangelosidental.com":{"data":{"url":"https://www.cangelosidental.com/","rawText":"","name":"Cangelosi Family Dentistry","phone":"(225) 292-3456","phoneHref":"tel:+12252923456","services":[],"city":"Baton Rouge","address":"","image":"","themeColor":""},"variant":"professional"},"lundinroof.com":{"data":{"url":"http://www.lundinroof.com/","rawText":"","name":"Lundin Roofing","phone":"(225) 343-7663","phoneHref":"tel:+12253437663","services":[],"city":"Baton Rouge","address":"","image":"","themeColor":""},"variant":"trades"}};
+
+let STATE = { data:null, variant:"trades", url:"" };
+
+/* ============================================================
+   AFTER-preview templates — this is the sales pitch.
+   Each builder returns a complete standalone HTML document.
+   ============================================================ */
+
+function icon(n){
+  const P = {
+    wrench:'<path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/>',
+    bolt:'<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/>',
+    flame:'<path d="M12 2s5 4.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 1-3.5s.5 1.5 2 1.5c-1-3 0-6 2-8z"/>',
+    drop:'<path d="M12 2s6 7 6 12a6 6 0 0 1-12 0c0-5 6-12 6-12z"/>',
+    phone:'<path d="M5 4h4l2 5-3 2a12 12 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+    check:'<path d="M4 12l5 5L20 7"/>',
+    arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+    pin:'<path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+    star:'<path d="M12 2l3 6.6 7 .8-5.2 4.8 1.4 7-6.2-3.6L5.8 21l1.4-7L2 9.4l7-.8L12 2z"/>',
+    truck:'<path d="M1 5h13v10H1zM14 9h4l4 4v2h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>',
+    plate:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
+    shield:'<path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/>'
+  };
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%">'+(P[n]||P.check)+'</svg>';
+}
+
+function servicesFor(d, variant){
+  let s = (d.services||[]).slice(0,6);
+  if(s.length < 4){
+    const extra = DEFAULT_SERVICES[variant].filter(x => !s.map(y=>y.toLowerCase()).includes(x.toLowerCase()));
+    s = s.concat(extra).slice(0,6);
+  }
+  return s;
+}
+function heroImg(d, seed, w, h){
+  if(d.image) return d.image;
+  return "https://picsum.photos/seed/"+seed+"/"+w+"/"+h;
+}
+function svcIcon(svc, variant){
+  const t = svc.toLowerCase();
+  if(/plumb|drain|sewer|water|leak/.test(t)) return "drop";
+  if(/elect|wiring|panel|generator|light/.test(t)) return "bolt";
+  if(/heat|furnace|ac\b|air|cool|hvac/.test(t)) return "flame";
+  if(/auto|car|mechanic|tire|brake|transmission/.test(t)) return "wrench";
+  if(/roof|gutter/.test(t)) return "shield";
+  if(/menu|dine|cater|takeout|special/.test(t)) return "plate";
+  if(/deliver/.test(t)) return "truck";
+  return variant==="restaurant" ? "plate" : variant==="professional" ? "shield" : "wrench";
+}
+
+/* ---------------- TRADES ---------------- */
+function buildTrades(d){
+  const name = esc(d.name), city = esc(d.city);
+  const phone = d.phone, phoneHref = d.phoneHref;
+  const svcs = servicesFor(d,"trades");
+  const img = heroImg(d, "trades-"+name.length, 1600, 950);
+  const callBtn = phone
+    ? '<a class="tbtn tbtn-call" href="'+phoneHref+'">'+icon("phone")+'<span>Call '+esc(phone)+'</span></a>'
+    : '<a class="tbtn tbtn-call" href="#quote">'+icon("phone")+'<span>Call for a quote</span></a>';
+  const svcCards = svcs.map(s =>
+    '<div class="tsvc"><div class="tsvc-ic">'+icon(svcIcon(s,"trades"))+'</div><h3>'+esc(s)+'</h3><p>'+esc(blurbFor(s))+'</p>'+
+    (phone?'<a href="'+phoneHref+'">Call about this '+icon("arrow")+'</a>':"")+'</div>'
+  ).join("");
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
+  '<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">'+
+  '<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;color:#182230;line-height:1.6;background:#fff}'+
+  'h1,h2,h3,.osw{font-family:Oswald,Arial Narrow,sans-serif;text-transform:uppercase;letter-spacing:.02em;line-height:1.1}'+
+  '.tw{max-width:1140px;margin:0 auto;padding:0 24px}'+
+  '.tnav{position:sticky;top:0;z-index:60;background:#0c1a2b;color:#fff}'+
+  '.tnav .tw{display:flex;align-items:center;justify-content:space-between;padding-top:14px;padding-bottom:14px}'+
+  '.tlogo{font-family:Oswald;font-size:22px;font-weight:700;letter-spacing:.03em}.tlogo em{color:#ff5c1a;font-style:normal}'+
+  '.tnav-links{display:flex;gap:26px;align-items:center}.tnav-links a.nl{color:#cfd8e3;text-decoration:none;font-size:14px;font-weight:600}.tnav-links a.nl:hover{color:#fff}'+
+  '.tbtn{display:inline-flex;align-items:center;gap:10px;background:#ff5c1a;color:#fff;text-decoration:none;font-family:Oswald;font-weight:600;font-size:16px;letter-spacing:.04em;text-transform:uppercase;padding:14px 26px;border-radius:6px;border:none;cursor:pointer}'+
+  '.tbtn svg{width:20px;height:20px}.tbtn:hover{background:#e04e12}'+
+  '.tbtn.oline{background:transparent;border:2px solid #fff}.tbtn.oline:hover{background:#fff;color:#0c1a2b}'+
+  '.tbtn.nsm{padding:10px 18px;font-size:14px}'+
+  '.thero{background:linear-gradient(rgba(12,26,43,.85),rgba(12,26,43,.62)),url(\''+img+'\') center/cover;color:#fff;padding:110px 0 100px}'+
+  '.tkick{color:#ff5c1a;font-weight:800;font-size:13px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:16px}'+
+  '.thero h1{font-size:clamp(42px,6.5vw,80px);margin-bottom:16px;max-width:800px}'+
+  '.thero p.sub{font-size:19px;color:#dbe3ec;max-width:600px;margin-bottom:32px}'+
+  '.tcta-row{display:flex;gap:14px;flex-wrap:wrap}'+
+  '.ttrust{background:#ff5c1a;color:#fff}.ttrust .tw{display:flex;flex-wrap:wrap;gap:8px 34px;justify-content:center;padding-top:16px;padding-bottom:16px}'+
+  '.ttrust span{font-family:Oswald;font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:8px}.ttrust svg{width:18px;height:18px}'+
+  '.tsec{padding:84px 0}.tsec.soft{background:#f4f6f9}'+
+  '.tsec h2{font-size:clamp(30px,4vw,46px);margin-bottom:8px}.tsec .lede{color:#5b6b7d;font-size:18px;margin-bottom:40px;max-width:640px}'+
+  '.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}'+
+  '.tsvc{background:#fff;border-radius:10px;padding:30px 26px;border-top:5px solid #ff5c1a;box-shadow:0 10px 30px rgba(12,26,43,.08)}'+
+  '.tsvc-ic{width:52px;height:52px;background:#0c1a2b;color:#ff5c1a;border-radius:12px;padding:12px;margin-bottom:18px}'+
+  '.tsvc h3{font-size:19px;margin-bottom:8px}.tsvc p{color:#5b6b7d;font-size:15px;margin-bottom:14px}'+
+  '.tsvc a{color:#ff5c1a;font-weight:700;font-size:14px;text-decoration:none;display:inline-flex;align-items:center;gap:6px}.tsvc a svg{width:16px;height:16px}'+
+  '.tbanner{background:#0c1a2b;color:#fff;padding:84px 0;text-align:center}'+
+  '.tbanner h2{font-size:clamp(32px,5vw,58px);margin-bottom:12px}.tbanner h2 em{color:#ff5c1a;font-style:normal}'+
+  '.tbanner p{color:#aeb9c7;font-size:18px;margin-bottom:30px}'+
+  '.tcontact{background:#fff}.tcontact .tw{display:grid;grid-template-columns:1fr 1fr;gap:26px}'+
+  '.tinfo{background:#0c1a2b;color:#fff;border-radius:14px;padding:40px}'+
+  '.tinfo h3{font-size:24px;margin-bottom:20px}.tinfo .row{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px}'+
+  '.tinfo .row .ic{width:40px;height:40px;flex:none;background:#ff5c1a;border-radius:10px;padding:9px;color:#fff}'+
+  '.tinfo .row b{display:block;font-size:14px;color:#8fa0b5;text-transform:uppercase;letter-spacing:.08em}'+
+  '.tinfo .row span{font-size:18px;font-weight:600}.tinfo .row a{color:#fff;text-decoration:none}'+
+  '.tform{background:#f4f6f9;border-radius:14px;padding:40px}'+
+  '.tform h3{font-size:24px;margin-bottom:6px}.tform p{color:#5b6b7d;margin-bottom:20px}'+
+  '.tform input,.tform textarea{width:100%;border:1px solid #d5dce4;border-radius:8px;padding:14px;font-size:16px;font-family:inherit;margin-bottom:12px;background:#fff}'+
+  '.tform button{width:100%}'+
+  '.tfoot{background:#081220;color:#7d8ea3;padding:44px 0;font-size:14px}.tfoot .tw{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}'+
+  '.tfoot b{color:#fff;font-family:Oswald;letter-spacing:.04em}'+
+  '.tmock{font-size:12px;color:#5b6b7d;margin-top:14px}'+
+  '.tcallbar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:70;background:#ff5c1a;color:#fff;text-align:center;font-family:Oswald;font-weight:700;font-size:19px;letter-spacing:.05em;text-transform:uppercase;padding:16px;text-decoration:none}'+
+  '@media(max-width:820px){.tgrid{grid-template-columns:1fr}.tcontact .tw{grid-template-columns:1fr}.tnav-links a.nl{display:none}.tcallbar{display:block}body{padding-bottom:60px}.tsec{padding:60px 0}}'+
+  '</style></head><body>'+
+  '<nav class="tnav"><div class="tw"><div class="tlogo">'+name.replace(/(.{0,60})/,"$1")+'</div><div class="tnav-links"><a class="nl" href="#services">Services</a><a class="nl" href="#quote">Contact</a>'+(phone?'<a class="tbtn nsm" href="'+phoneHref+'">Call now</a>':"")+'</div></div></nav>'+
+  '<header class="thero"><div class="tw"><div class="tkick">Serving '+city+' &amp; surrounding areas</div><h1>'+name+'</h1>'+
+  '<p class="sub">Repairs, installs, and maintenance — done right the first time, priced fair, no runaround.</p>'+
+  '<div class="tcta-row">'+callBtn+'<a class="tbtn oline" href="#quote">Get a free estimate</a></div></div></header>'+
+  '<div class="ttrust"><div class="tw"><span>'+icon("check")+'Free estimates</span><span>'+icon("check")+'Real humans answer</span><span>'+icon("check")+'Serving '+city+'</span><span>'+icon("check")+'Upfront pricing</span></div></div>'+
+  '<section class="tsec soft" id="services"><div class="tw"><h2>What we do</h2><p class="lede">One call handles all of it. Here\'s the short list:</p><div class="tgrid">'+svcCards+'</div></div></section>'+
+  '<section class="tbanner"><div class="tw"><h2>Something broke? <em>Don\'t wait on it.</em></h2><p>Small problems turn into big bills. Call now and talk to somebody who\'ll shoot you straight.</p>'+callBtn+'</div></section>'+
+  '<section class="tsec tcontact" id="quote"><div class="tw">'+
+  '<div class="tinfo"><h3 class="osw">Get in touch</h3>'+
+  (phone?'<div class="row"><div class="ic">'+icon("phone")+'</div><div><b>Call or text</b><a href="'+phoneHref+'">'+esc(phone)+'</a></div></div>':"")+
+  (d.address?'<div class="row"><div class="ic">'+icon("pin")+'</div><div><b>Find us</b><span>'+esc(d.address)+'</span></div></div>':"")+
+  '<div class="row"><div class="ic">'+icon("pin")+'</div><div><b>Area</b><span>'+city+', Louisiana</span></div></div>'+
+  '<div class="row"><div class="ic">'+icon("clock")+'</div><div><b>Hours</b><span>Call for today\'s hours</span></div></div></div>'+
+  '<div class="tform"><h3 class="osw">Get a free estimate</h3><p>Tell us what\'s going on. We\'ll call you back — usually same day.</p>'+
+  '<form id="qform"><input required placeholder="Your name"><input required placeholder="Phone number" type="tel"><textarea rows="3" placeholder="What do you need done?"></textarea><button class="tbtn" type="submit">Send it &rarr;</button></form></div>'+
+  '</div></section>'+
+  '<footer class="tfoot"><div class="tw"><div><b>'+name+'</b><br>'+city+', Louisiana</div><div style="text-align:right">Preview mockup — your real photos go here.<br><span class="tmock">Rebuilt for $299 by SiteFix.</span></div></div></footer>'+
+  (phone?'<a class="tcallbar" href="'+phoneHref+'">Tap to call now</a>':"")+
+  '<script>document.getElementById("qform").addEventListener("submit",function(e){e.preventDefault();this.innerHTML="<h3 class=\'osw\' style=\'color:#0c1a2b\'>Got it.</h3><p>We\'ll call you back shortly. Thanks for reaching out.</p>";});<\/script>'+
+  '</body></html>';
+}
+
+/* ---------------- RESTAURANT ---------------- */
+function buildRestaurant(d){
+  const name = esc(d.name), city = esc(d.city);
+  const phone = d.phone, phoneHref = d.phoneHref;
+  const svcs = servicesFor(d,"restaurant");
+  const img = heroImg(d, "rest-"+name.length, 1600, 950);
+  const img2 = heroImg(d, "rest2-"+name.length, 900, 700);
+  const callBtn = phone
+    ? '<a class="rbtn" href="'+phoneHref+'">Call for a table</a>'
+    : '<a class="rbtn" href="#visit">Plan your visit</a>';
+  const menuItems = svcs.map(s =>
+    '<div class="ritem"><div class="rrow"><h3>'+esc(s)+'</h3><span class="dots"></span></div><p>'+esc(blurbFor(s))+'</p></div>'
+  ).join("");
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
+  '<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">'+
+  '<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;color:#2a2620;background:#faf5ea;line-height:1.65}'+
+  '.serif{font-family:"DM Serif Display",Georgia,serif;font-weight:400;line-height:1.12}'+
+  '.rw{max-width:1140px;margin:0 auto;padding:0 24px}'+
+  '.rnav{position:sticky;top:0;z-index:60;background:rgba(250,245,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid #e7dcc4}'+
+  '.rnav .rw{display:flex;align-items:center;justify-content:space-between;padding-top:16px;padding-bottom:16px}'+
+  '.rlogo{font-family:"DM Serif Display",serif;font-size:26px;color:#22402f}'+
+  '.rnav-links{display:flex;gap:28px;align-items:center}.rnav-links a.nl{color:#5c554a;text-decoration:none;font-size:14px;font-weight:600}.rnav-links a.nl:hover{color:#22402f}'+
+  '.rbtn{display:inline-block;background:#c08a2d;color:#fff;text-decoration:none;font-weight:700;font-size:16px;padding:15px 32px;border-radius:999px;border:none;cursor:pointer}'+
+  '.rbtn:hover{background:#a57624}.rbtn.oline{background:transparent;border:2px solid #fff;color:#fff}.rbtn.oline:hover{background:#fff;color:#22402f}'+
+  '.rbtn.nsm{padding:10px 22px;font-size:14px}'+
+  '.rhero{background:linear-gradient(rgba(24,38,29,.72),rgba(24,38,29,.55)),url(\''+img+'\') center/cover;color:#faf5ea;text-align:center;padding:130px 0 120px}'+
+  '.rkick{color:#e3b85c;font-weight:700;font-size:13px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:18px}'+
+  '.rhero h1{font-size:clamp(48px,7.5vw,92px);margin-bottom:14px}'+
+  '.rhero p.sub{font-size:20px;color:#efe6d2;max-width:600px;margin:0 auto 34px;font-style:italic;font-family:"DM Serif Display",serif}'+
+  '.rcta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}'+
+  '.rsec{padding:88px 0}.rsec h2{font-size:clamp(32px,4.5vw,52px);color:#22402f;text-align:center;margin-bottom:6px}'+
+  '.rsec .lede{text-align:center;color:#7a7264;font-size:18px;margin-bottom:48px;font-style:italic;font-family:"DM Serif Display",serif}'+
+  '.rmenu{display:grid;grid-template-columns:1fr 1fr;gap:34px 56px;max-width:920px;margin:0 auto}'+
+  '.ritem .rrow{display:flex;align-items:baseline;gap:10px}.ritem h3{font-family:"DM Serif Display",serif;font-size:23px;color:#22402f;white-space:nowrap}'+
+  '.ritem .dots{flex:1;border-bottom:2px dotted #c9b98f;transform:translateY(-6px)}'+
+  '.ritem p{color:#7a7264;font-size:15px;margin-top:4px}'+
+  '.rinfo{background:#22402f;color:#efe6d2}.rinfo .rw{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-top:70px;padding-bottom:70px}'+
+  '.ricard{text-align:center;padding:10px}.ricard .ic{width:46px;height:46px;margin:0 auto 14px;color:#e3b85c}.ricard .ic svg{width:100%;height:100%}'+
+  '.ricard h3{font-family:"DM Serif Display",serif;font-size:22px;margin-bottom:6px;color:#faf5ea}.ricard p{color:#b9ac8d;font-size:15px}.ricard a{color:#e3b85c;font-weight:700;text-decoration:none;font-size:17px}'+
+  '.rabout .rw{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}'+
+  '.rabout img{width:100%;border-radius:14px;box-shadow:0 24px 60px rgba(34,64,47,.18)}'+
+  '.rabout h2{text-align:left;margin-bottom:16px}.rabout p{color:#5c554a;font-size:17px;margin-bottom:16px}'+
+  '.rband{background:#c08a2d;color:#fff;text-align:center;padding:70px 0}'+
+  '.rband h2{font-size:clamp(28px,4.5vw,48px);margin-bottom:10px}.rband p{font-size:18px;margin-bottom:26px;color:#fdf6e3}'+
+  '.rband .rbtn{background:#22402f}.rband .rbtn:hover{background:#16291d}'+
+  '.rfoot{background:#182619;color:#8d8268;padding:46px 0;font-size:14px;text-align:center}.rfoot .rlogo{color:#faf5ea;margin-bottom:8px;display:block}'+
+  '@media(max-width:820px){.rmenu{grid-template-columns:1fr}.rinfo .rw{grid-template-columns:1fr}.rabout .rw{grid-template-columns:1fr}.rnav-links a.nl{display:none}.rsec{padding:60px 0}}'+
+  '</style></head><body>'+
+  '<nav class="rnav"><div class="rw"><div class="rlogo">'+name+'</div><div class="rnav-links"><a class="nl" href="#menu">Menu</a><a class="nl" href="#visit">Visit</a>'+(phone?'<a class="rbtn nsm" href="'+phoneHref+'">Call</a>':"")+'</div></div></nav>'+
+  '<header class="rhero"><div class="rw"><div class="rkick">A '+city+' favorite</div><h1 class="serif">'+name+'</h1>'+
+  '<p class="sub">Real food, real portions, no pretense. Come hungry.</p>'+
+  '<div class="rcta-row"><a class="rbtn oline" href="#menu">See the menu</a>'+callBtn+'</div></div></header>'+
+  '<section class="rsec" id="menu"><div class="rw"><h2 class="serif">The Hits</h2><p class="lede">what the regulars order</p><div class="rmenu">'+menuItems+'</div></div></section>'+
+  '<section class="rinfo" id="visit"><div class="rw">'+
+  '<div class="ricard"><div class="ic">'+icon("pin")+'</div><h3>Find us</h3><p>'+(d.address?esc(d.address)+'<br>':"")+city+', Louisiana</p></div>'+
+  '<div class="ricard"><div class="ic">'+icon("phone")+'</div><h3>Call ahead</h3>'+(phone?'<a href="'+phoneHref+'">'+esc(phone)+'</a>':"<p>Call for today's hours</p>")+'</div>'+
+  '<div class="ricard"><div class="ic">'+icon("clock")+'</div><h3>Hours</h3><p>Call for today\'s hours —<br>we keep it simple.</p></div>'+
+  '</div></section>'+
+  '<section class="rsec rabout"><div class="rw"><img src="'+img2+'" alt="'+name+'">'+
+  '<div><h2 class="serif">Been feeding '+city+' right.</h2><p>No frozen shortcuts, no tiny portions, no attitude. Just the kind of plate that keeps people coming back — and bringing their people with them.</p><p>Bring the family. Bring an appetite. We\'ll handle the rest.</p><div style="margin-top:26px">'+callBtn+'</div></div></div></section>'+
+  '<section class="rband"><div class="rw"><h2 class="serif">Feeding a crowd? We cater.</h2><p>Office lunches, family gatherings, game day — you name it.</p>'+(phone?'<a class="rbtn" href="'+phoneHref+'">Call '+esc(phone)+'</a>':'<a class="rbtn" href="#visit">Get in touch</a>')+'</div></section>'+
+  '<footer class="rfoot"><div class="rw"><span class="rlogo">'+name+'</span><div>'+city+', Louisiana &middot; Preview mockup — your real photos go here.<br>Rebuilt for $299 by SiteFix.</div></div></footer>'+
+  '</body></html>';
+}
+
+/* ---------------- PROFESSIONAL ---------------- */
+function buildProfessional(d){
+  const name = esc(d.name), city = esc(d.city);
+  const phone = d.phone, phoneHref = d.phoneHref;
+  const svcs = servicesFor(d,"professional");
+  const img = heroImg(d, "pro-"+name.length, 900, 1050);
+  const callBtn = phone
+    ? '<a class="pbtn" href="'+phoneHref+'">Call '+esc(phone)+'</a>'
+    : '<a class="pbtn" href="#contact">Request an appointment</a>';
+  const svcCards = svcs.map(s =>
+    '<div class="psvc"><div class="psvc-ic">'+icon(svcIcon(s,"professional"))+'</div><h3>'+esc(s)+'</h3><p>'+esc(blurbFor(s))+'</p></div>'
+  ).join("");
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
+  '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">'+
+  '<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;color:#17272b;background:#fff;line-height:1.65}'+
+  '.pw{max-width:1140px;margin:0 auto;padding:0 24px}'+
+  '.pnav{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid #e3eceb}'+
+  '.pnav .pw{display:flex;align-items:center;justify-content:space-between;padding-top:15px;padding-bottom:15px}'+
+  '.plogo{font-weight:800;font-size:20px;color:#0d4f48;letter-spacing:-.01em}'+
+  '.pnav-links{display:flex;gap:26px;align-items:center}.pnav-links a.nl{color:#5c6f72;text-decoration:none;font-size:14px;font-weight:600}.pnav-links a.nl:hover{color:#0d4f48}'+
+  '.pbtn{display:inline-block;background:#0d4f48;color:#fff;text-decoration:none;font-weight:700;font-size:16px;padding:15px 30px;border-radius:10px;border:none;cursor:pointer}'+
+  '.pbtn:hover{background:#093832}.pbtn.oline{background:#fff;border:2px solid #0d4f48;color:#0d4f48}.pbtn.oline:hover{background:#0d4f48;color:#fff}'+
+  '.pbtn.nsm{padding:10px 20px;font-size:14px}'+
+  '.phero{background:linear-gradient(180deg,#f2f8f7,#fff);padding:90px 0 80px;overflow:hidden}'+
+  '.phero .pw{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}'+
+  '.peyebrow{color:#14907f;font-weight:800;font-size:12px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:16px}'+
+  '.phero h1{font-size:clamp(36px,5vw,58px);font-weight:800;letter-spacing:-.02em;line-height:1.12;margin-bottom:18px;color:#0e2a27}'+
+  '.phero p.sub{font-size:19px;color:#5c6f72;max-width:520px;margin-bottom:32px}'+
+  '.pcta-row{display:flex;gap:14px;flex-wrap:wrap}'+
+  '.phero-img{position:relative}.phero-img img{width:100%;border-radius:18px;box-shadow:0 30px 70px rgba(13,79,72,.18)}'+
+  '.pbadge{position:absolute;left:-18px;bottom:34px;background:#fff;border-radius:14px;box-shadow:0 16px 40px rgba(13,79,72,.16);padding:16px 20px;display:flex;gap:12px;align-items:center}'+
+  '.pbadge .ic{width:42px;height:42px;background:#e2f2ef;color:#0d4f48;border-radius:10px;padding:10px}'+
+  '.pbadge b{display:block;font-size:15px}.pbadge span{font-size:13px;color:#5c6f72}'+
+  '.ptrust{border-top:1px solid #e3eceb;border-bottom:1px solid #e3eceb;background:#fff}.ptrust .pw{display:flex;flex-wrap:wrap;gap:10px 40px;justify-content:center;padding-top:18px;padding-bottom:18px}'+
+  '.ptrust span{display:flex;align-items:center;gap:9px;font-weight:600;font-size:15px;color:#0e2a27}.ptrust svg{width:20px;height:20px;color:#14907f}'+
+  '.psec{padding:84px 0}.psec.soft{background:#f2f8f7}'+
+  '.psec h2{font-size:clamp(30px,4vw,44px);font-weight:800;letter-spacing:-.02em;color:#0e2a27;margin-bottom:10px}'+
+  '.psec .lede{color:#5c6f72;font-size:18px;margin-bottom:44px;max-width:620px}'+
+  '.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}'+
+  '.psvc{background:#fff;border:1px solid #e3eceb;border-radius:14px;padding:30px 26px}'+
+  '.psvc:hover{box-shadow:0 16px 40px rgba(13,79,72,.1);border-color:#cfe3e0}'+
+  '.psvc-ic{width:50px;height:50px;background:#e2f2ef;color:#0d4f48;border-radius:12px;padding:12px;margin-bottom:18px}'+
+  '.psvc h3{font-size:18px;margin-bottom:8px}.psvc p{color:#5c6f72;font-size:15px}'+
+  '.psteps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}'+
+  '.pstep{background:#0d4f48;color:#fff;border-radius:14px;padding:34px 28px}'+
+  '.pstep .n{font-size:15px;font-weight:800;color:#7fd1c2;letter-spacing:.14em;margin-bottom:10px}'+
+  '.pstep h3{font-size:21px;margin-bottom:8px}.pstep p{color:#bcd6d1;font-size:15px}'+
+  '.pcontact .pw{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}'+
+  '.pccard{border:1px solid #e3eceb;border-radius:14px;padding:32px 28px;text-align:center}'+
+  '.pccard .ic{width:52px;height:52px;margin:0 auto 16px;background:#e2f2ef;color:#0d4f48;border-radius:14px;padding:13px}'+
+  '.pccard h3{font-size:19px;margin-bottom:6px}.pccard p{color:#5c6f72;font-size:15px;margin-bottom:16px}.pccard a{color:#0d4f48;font-weight:800;font-size:18px;text-decoration:none}'+
+  '.pfoot{background:#0a2b27;color:#8faaa5;padding:44px 0;font-size:14px}.pfoot .pw{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}'+
+  '.pfoot b{color:#fff}'+
+  '@media(max-width:860px){.phero .pw{grid-template-columns:1fr}.pgrid,.psteps,.pcontact .pw{grid-template-columns:1fr}.pnav-links a.nl{display:none}.psec{padding:60px 0}.pbadge{left:10px}}'+
+  '</style></head><body>'+
+  '<nav class="pnav"><div class="pw"><div class="plogo">'+name+'</div><div class="pnav-links"><a class="nl" href="#services">Services</a><a class="nl" href="#visit">Visit</a><a class="nl" href="#contact">Contact</a>'+(phone?'<a class="pbtn nsm" href="'+phoneHref+'">Call now</a>':"")+'</div></div></nav>'+
+  '<header class="phero"><div class="pw"><div>'+
+  '<div class="peyebrow">'+city+' &middot; Louisiana</div><h1>'+name+'</h1>'+
+  '<p class="sub">Straight answers, fair prices, and appointments that actually start on time. That\'s the whole pitch.</p>'+
+  '<div class="pcta-row">'+callBtn+'<a class="pbtn oline" href="#services">See services</a></div></div>'+
+  '<div class="phero-img"><img src="'+img+'" alt="'+name+'"><div class="pbadge"><div class="ic">'+icon("pin")+'</div><div><b>Serving '+city+'</b><span>Local &amp; independent</span></div></div></div>'+
+  '</div></header>'+
+  '<div class="ptrust"><div class="pw"><span>'+icon("check")+'Easy scheduling</span><span>'+icon("check")+'Clear, upfront pricing</span><span>'+icon("check")+'Real humans answer the phone</span></div></div>'+
+  '<section class="psec soft" id="services"><div class="pw"><h2>Services</h2><p class="lede">Everything we do, in plain English:</p><div class="pgrid">'+svcCards+'</div></div></section>'+
+  '<section class="psec" id="visit"><div class="pw"><h2>How it works</h2><p class="lede">Three steps. No paperwork marathons.</p><div class="psteps">'+
+  '<div class="pstep"><div class="n">STEP 1</div><h3>Call or message</h3><p>Tell us what you need. A real person answers and gives it to you straight.</p></div>'+
+  '<div class="pstep"><div class="n">STEP 2</div><h3>Come see us</h3><p>Easy to find, easy parking, appointments that start when they\'re supposed to.</p></div>'+
+  '<div class="pstep"><div class="n">STEP 3</div><h3>Done right</h3><p>No surprises on the bill. If something\'s not right, we make it right.</p></div>'+
+  '</div></div></section>'+
+  '<section class="psec soft" id="contact"><div class="pw"><h2 style="text-align:center">Get in touch</h2><p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">Questions? Call. We pick up.</p><div class="pcontact"><div class="pw">'+
+  '<div class="pccard"><div class="ic">'+icon("phone")+'</div><h3>Call</h3><p>Fastest way to reach us.</p>'+(phone?'<a href="'+phoneHref+'">'+esc(phone)+'</a>':"<p>Number coming soon</p>")+'</div>'+
+  '<div class="pccard"><div class="ic">'+icon("pin")+'</div><h3>Visit</h3><p>'+(d.address?esc(d.address)+"<br>":"")+city+', Louisiana</p></div>'+
+  '<div class="pccard"><div class="ic">'+icon("clock")+'</div><h3>Hours</h3><p>Call for today\'s hours.</p></div>'+
+  '</div></div></div></section>'+
+  '<footer class="pfoot"><div class="pw"><div><b>'+name+'</b><br>'+city+', Louisiana</div><div style="text-align:right">Preview mockup — your real photos go here.<br>Rebuilt for $299 by SiteFix.</div></div></footer>'+
+  '</body></html>';
+}
+
+const BUILDERS = { trades: buildTrades, restaurant: buildRestaurant, professional: buildProfessional };
+const VARIANT_LABELS = { trades:"Trades", restaurant:"Restaurant", professional:"Professional" };
+
+/* ============================================================
+   App wiring
+   ============================================================ */
+const LOAD_LINES = [
+  "Pulling up your site\u2026",
+  "Grabbing your business name\u2026",
+  "Stealing your services list\u2026",
+  "Finding your phone number\u2026",
+  "Laying the new bricks\u2026"
+];
+let loadTimer = null;
+
+function showStep(which){
+  $("step-input").style.display = which==="input" ? "" : "none";
+  $("step-results").classList.toggle("open", which==="results");
+  if(which==="results") window.scrollTo({top:0, behavior:"smooth"});
+}
+function startLoader(){
+  $("step-input").querySelector(".hero").style.display = "none";
+  $("step-input").querySelector(".how").style.display = "none";
+  const l = $("loader"); l.classList.add("open");
+  let i = 0;
+  $("loadMsg").innerHTML = LOAD_LINES[0];
+  loadTimer = setInterval(()=>{
+    i = (i+1) % LOAD_LINES.length;
+    $("loadMsg").innerHTML = LOAD_LINES[i];
+  }, 2600);
+}
+function stopLoader(){
+  clearInterval(loadTimer);
+  $("loader").classList.remove("open");
+  $("step-input").querySelector(".hero").style.display = "";
+  $("step-input").querySelector(".how").style.display = "";
+}
+function showErr(html){
+  const e = $("errBox");
+  e.innerHTML = html;
+  e.classList.add("open");
+}
+function hideErr(){ $("errBox").classList.remove("open"); }
+
+function renderAfter(){
+  const d = STATE.data;
+  if(!d) return;
+  const html = BUILDERS[STATE.variant](d);
+  $("afterFrame").srcdoc = html;
+  document.querySelectorAll(".switcher .swbtn").forEach(b =>
+    b.classList.toggle("on", b.dataset.variant === STATE.variant));
+}
+
+function showResults(){
+  $("resUrl").textContent = STATE.url || STATE.data.name;
+  renderAfter();
+  // before pane: live embed of their actual site
+  if(STATE.url) $("beforeFrame").src = STATE.url;
+  showStep("results");
+}
+
+async function runUrlFlow(){
+  hideErr();
+  const url = normUrl($("urlInput").value);
+  if(!url){ showErr("Type in a web address first — like <b>yourwebsite.com</b>."); return; }
+  let host = "";
+  try{ host = new URL(url).hostname.replace(/^www\./,"").toLowerCase(); }catch(e){}
+  const preset = (host && typeof PRESETS !== "undefined") ? PRESETS[host] : null;
+  if(preset && preset.data){
+    STATE = { data: preset.data, variant: preset.variant || detectIndustry(preset.data), url };
+    showResults();
+    return;
+  }
+  startLoader();
+  try{
+    const html = await fetchHtml(url);
+    const data = extractData(html, url);
+    stopLoader();
+    STATE = { data, variant: detectIndustry(data), url };
+    showResults();
+  }catch(e){
+    stopLoader();
+    showErr("Couldn't pull up that site from here — some older sites block outside readers. " +
+      "<button id='errManual'>Type your business name instead &rarr;</button>");
+    const b = $("errManual");
+    if(b) b.onclick = ()=>{ hideErr(); $("manualPanel").classList.add("open"); $("mName").focus(); };
+  }
+}
+
+function runManualFlow(){
+  hideErr();
+  const name = clean($("mName").value);
+  if(!name){ showErr("Give us your business name so we know what to put on the sign."); return; }
+  const data = {
+    url:"", name: name.replace(/\b\w/g, c=>c.toUpperCase()),
+    phone: fmtPhone($("mPhone").value), phoneHref: $("mPhone").value ? telHref($("mPhone").value) : "",
+    services: [], city: clean($("mCity").value) || "Baton Rouge",
+    address:"", image:"", themeColor:"", rawText:""
+  };
+  STATE = { data, variant: $("mIndustry").value, url:"" };
+  $("beforeFrame").removeAttribute("src");
+  $("beforeNote").textContent = "No old site to show — this business is starting from scratch, which honestly puts them ahead of half the list.";
+  showResults();
+}
+
+/* ---------- lead capture ---------- */
+/* LEAD_BACKEND: to go live, POST {name, phone, url, variant, ts}
+   to your endpoint here, then show the success panel. */
+function submitLead(){
+  const name = clean($("leadName").value);
+  const phone = clean($("leadPhone").value);
+  if(name.length < 2){ $("leadName").focus(); $("leadName").style.borderColor = "#e05a4e"; return; }
+  if(phone.replace(/\D/g,"").length < 7){ $("leadPhone").focus(); $("leadPhone").style.borderColor = "#e05a4e"; return; }
+  const lead = { name, phone, url: STATE.url || "(no site)", variant: STATE.variant, ts: new Date().toISOString() };
+  try{
+    const k = "sitefix_leads";
+    const arr = JSON.parse(localStorage.getItem(k) || "[]");
+    arr.push(lead);
+    localStorage.setItem(k, JSON.stringify(arr));
+  }catch(e){/* storage unavailable — still show success */}
+  // fetch("/api/leads", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(lead)});
+  $("leadForm").style.display = "none";
+  $("leadSuccessMsg").textContent = "Got it, " + name.split(" ")[0] + ". We'll call " + phone + " within one business day. Go run your business — we'll handle the website.";
+  $("leadSuccess").classList.add("open");
+}
+
+/* ---------- events ---------- */
+$("goBtn").addEventListener("click", runUrlFlow);
+$("urlInput").addEventListener("keydown", e => { if(e.key === "Enter") runUrlFlow(); });
+$("noSiteBtn").addEventListener("click", ()=>{
+  $("manualPanel").classList.toggle("open");
+  if($("manualPanel").classList.contains("open")) $("mName").focus();
+});
+$("manualGo").addEventListener("click", runManualFlow);
+$("sample1").addEventListener("click", ()=>{ $("urlInput").value = "bdplumbing.net"; runUrlFlow(); });
+$("sample2").addEventListener("click", ()=>{ $("urlInput").value = "philsoysterbar.com"; runUrlFlow(); });
+$("leadGo").addEventListener("click", submitLead);
+$("restartBtn").addEventListener("click", ()=>{
+  $("leadForm").style.display = "";
+  $("leadSuccess").classList.remove("open");
+  $("leadName").value = ""; $("leadPhone").value = "";
+  $("beforeNote").textContent = "Note: some older sites refuse to load inside a preview window. If the \"before\" side is blank, that's their site blocking it — which honestly tells you something too.";
+  showStep("input");
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+document.querySelectorAll(".switcher .swbtn").forEach(b =>
+  b.addEventListener("click", ()=>{ STATE.variant = b.dataset.variant; renderAfter(); }));
+$("tabAfter").addEventListener("click", ()=>{
+  $("cmp").classList.remove("showbefore");
+  $("tabAfter").classList.add("on"); $("tabBefore").classList.remove("on");
+});
+$("tabBefore").addEventListener("click", ()=>{
+  $("cmp").classList.add("showbefore");
+  $("tabBefore").classList.add("on"); $("tabAfter").classList.remove("on");
+});
+})();
+</script>
+</body>
+</html>
