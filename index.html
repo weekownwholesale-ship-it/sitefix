@@ -96,6 +96,17 @@ h1,h2,h3,.disp{font-family:'Oswald','Arial Narrow',Impact,sans-serif;font-weight
 .pane .phead .pnote{font-size:12px;color:var(--dim)}
 .pane iframe{width:100%;height:640px;border:0;background:#fff;flex:none}
 .vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--gold);color:#171207;font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,0,0,.5);z-index:2}
+.shock{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 26px}
+.shock .card{border-radius:14px;padding:20px 22px;border:1px solid var(--line)}
+.shock .old{background:#1c1010;border-color:#5c2222}
+.shock .new{background:#0c1a12;border-color:#1e5c34}
+.shock h3{font-family:'Oswald',sans-serif;font-size:19px;letter-spacing:.06em;margin:0 0 12px;text-transform:uppercase}
+.shock .old h3{color:#ff8080}
+.shock .new h3{color:#7dffa0}
+.shock ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:15px;line-height:1.45}
+.shock .old li::before{content:'\2717  ';color:#ff6b6b;font-weight:800}
+.shock .new li::before{content:'\2713  ';color:#4ade80;font-weight:800}
+@media(max-width:720px){.shock{grid-template-columns:1fr}}
 .cmpnote{text-align:center;color:var(--dim);font-size:13px;margin:10px 0 30px;max-width:700px;margin-left:auto;margin-right:auto}
 .mobiletabs{display:none;justify-content:center;gap:8px;margin:0 0 14px}
 
@@ -227,7 +238,21 @@ footer .brand{font-size:18px;margin-bottom:8px;display:block}
     <button class="swbtn" id="tabBefore">BEFORE — their site</button>
   </div>
 
-  <div class="cmp" id="cmp">
+  <div class="shock">
+      <div class="card old"><h3>Their site now</h3><ul>
+        <li>Nearly unreadable on a phone</li>
+        <li>No tap-to-call — customers hunt for the number</li>
+        <li>Looks a decade out of date</li>
+        <li>Contact info buried or missing</li>
+      </ul></div>
+      <div class="card new"><h3>Their new site</h3><ul>
+        <li>Phone-first — reads perfectly on mobile</li>
+        <li>Tap-to-call button stuck to the screen</li>
+        <li>Modern design that looks expensive</li>
+        <li>Call, text &amp; directions one tap away</li>
+      </ul></div>
+    </div>
+    <div class="cmp" id="cmp">
     <div class="pane before">
       <div class="phead"><span class="ptag">Before</span><span class="pnote">what customers see today</span></div>
       <iframe id="beforeFrame" title="Current website" loading="lazy"></iframe>
