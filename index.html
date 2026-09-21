@@ -512,227 +512,263 @@ function svcIcon(svc, variant){
 }
 
 /* ---------------- TRADES ---------------- */
+/* Shared SVG icons (no emoji) */
+const IC = {
+phone:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+check:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+pin:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+clock:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+arrow:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'};
+
 function buildTrades(d){
-  const name = esc(d.name), city = esc(d.city);
-  const phone = d.phone, phoneHref = d.phoneHref;
-  const svcs = servicesFor(d,"trades");
-  const img = heroImg(d, "trades-"+name.length, 1600, 950);
-  const callBtn = phone
-    ? '<a class="tbtn tbtn-call" href="'+phoneHref+'">'+icon("phone")+'<span>Call '+esc(phone)+'</span></a>'
-    : '<a class="tbtn tbtn-call" href="#quote">'+icon("phone")+'<span>Call for a quote</span></a>';
-  const svcCards = svcs.map(s =>
-    '<div class="tsvc"><div class="tsvc-ic">'+icon(svcIcon(s,"trades"))+'</div><h3>'+esc(s)+'</h3><p>'+esc(blurbFor(s))+'</p>'+
-    (phone?'<a href="'+phoneHref+'">Call about this '+icon("arrow")+'</a>':"")+'</div>'
-  ).join("");
-  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
-  '<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">'+
-  '<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;color:#182230;line-height:1.6;background:#fff}'+
-  'h1,h2,h3,.osw{font-family:Oswald,Arial Narrow,sans-serif;text-transform:uppercase;letter-spacing:.02em;line-height:1.1}'+
-  '.tw{max-width:1140px;margin:0 auto;padding:0 24px}'+
-  '.tnav{position:sticky;top:0;z-index:60;background:#0c1a2b;color:#fff}'+
-  '.tnav .tw{display:flex;align-items:center;justify-content:space-between;padding-top:14px;padding-bottom:14px}'+
-  '.tlogo{font-family:Oswald;font-size:22px;font-weight:700;letter-spacing:.03em}.tlogo em{color:#ff5c1a;font-style:normal}'+
-  '.tnav-links{display:flex;gap:26px;align-items:center}.tnav-links a.nl{color:#cfd8e3;text-decoration:none;font-size:14px;font-weight:600}.tnav-links a.nl:hover{color:#fff}'+
-  '.tbtn{display:inline-flex;align-items:center;gap:10px;background:#ff5c1a;color:#fff;text-decoration:none;font-family:Oswald;font-weight:600;font-size:16px;letter-spacing:.04em;text-transform:uppercase;padding:14px 26px;border-radius:6px;border:none;cursor:pointer}'+
-  '.tbtn svg{width:20px;height:20px}.tbtn:hover{background:#e04e12}'+
-  '.tbtn.oline{background:transparent;border:2px solid #fff}.tbtn.oline:hover{background:#fff;color:#0c1a2b}'+
-  '.tbtn.nsm{padding:10px 18px;font-size:14px}'+
-  '.thero{background:linear-gradient(rgba(12,26,43,.85),rgba(12,26,43,.62)),url("'+img+'") center/cover;color:#fff;padding:110px 0 100px}'+
-  '.tkick{color:#ff5c1a;font-weight:800;font-size:13px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:16px}'+
-  '.thero h1{font-size:clamp(42px,6.5vw,80px);margin-bottom:16px;max-width:800px}'+
-  '.thero p.sub{font-size:19px;color:#dbe3ec;max-width:600px;margin-bottom:32px}'+
-  '.tcta-row{display:flex;gap:14px;flex-wrap:wrap}'+
-  '.ttrust{background:#ff5c1a;color:#fff}.ttrust .tw{display:flex;flex-wrap:wrap;gap:8px 34px;justify-content:center;padding-top:16px;padding-bottom:16px}'+
-  '.ttrust span{font-family:Oswald;font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:8px}.ttrust svg{width:18px;height:18px}'+
-  '.tsec{padding:84px 0}.tsec.soft{background:#f4f6f9}'+
-  '.tsec h2{font-size:clamp(30px,4vw,46px);margin-bottom:8px}.tsec .lede{color:#5b6b7d;font-size:18px;margin-bottom:40px;max-width:640px}'+
-  '.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}'+
-  '.tsvc{background:#fff;border-radius:10px;padding:30px 26px;border-top:5px solid #ff5c1a;box-shadow:0 10px 30px rgba(12,26,43,.08)}'+
-  '.tsvc-ic{width:52px;height:52px;background:#0c1a2b;color:#ff5c1a;border-radius:12px;padding:12px;margin-bottom:18px}'+
-  '.tsvc h3{font-size:19px;margin-bottom:8px}.tsvc p{color:#5b6b7d;font-size:15px;margin-bottom:14px}'+
-  '.tsvc a{color:#ff5c1a;font-weight:700;font-size:14px;text-decoration:none;display:inline-flex;align-items:center;gap:6px}.tsvc a svg{width:16px;height:16px}'+
-  '.tbanner{background:#0c1a2b;color:#fff;padding:84px 0;text-align:center}'+
-  '.tbanner h2{font-size:clamp(32px,5vw,58px);margin-bottom:12px}.tbanner h2 em{color:#ff5c1a;font-style:normal}'+
-  '.tbanner p{color:#aeb9c7;font-size:18px;margin-bottom:30px}'+
-  '.tcontact{background:#fff}.tcontact .tw{display:grid;grid-template-columns:1fr 1fr;gap:26px}'+
-  '.tinfo{background:#0c1a2b;color:#fff;border-radius:14px;padding:40px}'+
-  '.tinfo h3{font-size:24px;margin-bottom:20px}.tinfo .row{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px}'+
-  '.tinfo .row .ic{width:40px;height:40px;flex:none;background:#ff5c1a;border-radius:10px;padding:9px;color:#fff}'+
-  '.tinfo .row b{display:block;font-size:14px;color:#8fa0b5;text-transform:uppercase;letter-spacing:.08em}'+
-  '.tinfo .row span{font-size:18px;font-weight:600}.tinfo .row a{color:#fff;text-decoration:none}'+
-  '.tform{background:#f4f6f9;border-radius:14px;padding:40px}'+
-  '.tform h3{font-size:24px;margin-bottom:6px}.tform p{color:#5b6b7d;margin-bottom:20px}'+
-  '.tform input,.tform textarea{width:100%;border:1px solid #d5dce4;border-radius:8px;padding:14px;font-size:16px;font-family:inherit;margin-bottom:12px;background:#fff}'+
-  '.tform button{width:100%}'+
-  '.tfoot{background:#081220;color:#7d8ea3;padding:44px 0;font-size:14px}.tfoot .tw{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}'+
-  '.tfoot b{color:#fff;font-family:Oswald;letter-spacing:.04em}'+
-  '.tmock{font-size:12px;color:#5b6b7d;margin-top:14px}'+
-  '.tcallbar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:70;background:#ff5c1a;color:#fff;text-align:center;font-family:Oswald;font-weight:700;font-size:19px;letter-spacing:.05em;text-transform:uppercase;padding:16px;text-decoration:none}'+
-  '@media(max-width:820px){.tgrid{grid-template-columns:1fr}.tcontact .tw{grid-template-columns:1fr}.tnav-links a.nl{display:none}.tcallbar{display:block}body{padding-bottom:60px}.tsec{padding:60px 0}}'+
-  '</style></head><body>'+
-  '<nav class="tnav"><div class="tw"><div class="tlogo">'+name.replace(/(.{0,60})/,"$1")+'</div><div class="tnav-links"><a class="nl" href="#services">Services</a><a class="nl" href="#quote">Contact</a>'+(phone?'<a class="tbtn nsm" href="'+phoneHref+'">Call now</a>':"")+'</div></div></nav>'+
-  '<header class="thero"><div class="tw"><div class="tkick">Serving '+city+' &amp; surrounding areas</div><h1>'+name+'</h1>'+
-  '<p class="sub">Repairs, installs, and maintenance — done right the first time, priced fair, no runaround.</p>'+
-  '<div class="tcta-row">'+callBtn+'<a class="tbtn oline" href="#quote">Get a free estimate</a></div></div></header>'+
-  '<div class="ttrust"><div class="tw"><span>'+icon("check")+'Free estimates</span><span>'+icon("check")+'Real humans answer</span><span>'+icon("check")+'Serving '+city+'</span><span>'+icon("check")+'Upfront pricing</span></div></div>'+
-  '<section class="tsec soft" id="services"><div class="tw"><h2>What we do</h2><p class="lede">One call handles all of it. Here\'s the short list:</p><div class="tgrid">'+svcCards+'</div></div></section>'+
-  '<section class="tbanner"><div class="tw"><h2>Something broke? <em>Don\'t wait on it.</em></h2><p>Small problems turn into big bills. Call now and talk to somebody who\'ll shoot you straight.</p>'+callBtn+'</div></section>'+
-  '<section class="tsec tcontact" id="quote"><div class="tw">'+
-  '<div class="tinfo"><h3 class="osw">Get in touch</h3>'+
-  (phone?'<div class="row"><div class="ic">'+icon("phone")+'</div><div><b>Call or text</b><a href="'+phoneHref+'">'+esc(phone)+'</a></div></div>':"")+
-  (d.address?'<div class="row"><div class="ic">'+icon("pin")+'</div><div><b>Find us</b><span>'+esc(d.address)+'</span></div></div>':"")+
-  '<div class="row"><div class="ic">'+icon("pin")+'</div><div><b>Area</b><span>'+city+', Louisiana</span></div></div>'+
-  '<div class="row"><div class="ic">'+icon("clock")+'</div><div><b>Hours</b><span>Call for today\'s hours</span></div></div></div>'+
-  '<div class="tform"><h3 class="osw">Get a free estimate</h3><p>Tell us what\'s going on. We\'ll call you back — usually same day.</p>'+
-  '<form id="qform"><input required placeholder="Your name"><input required placeholder="Phone number" type="tel"><textarea rows="3" placeholder="What do you need done?"></textarea><button class="tbtn" type="submit">Send it &rarr;</button></form></div>'+
-  '</div></section>'+
-  '<footer class="tfoot"><div class="tw"><div><b>'+name+'</b><br>'+city+', Louisiana</div><div style="text-align:right">Preview mockup — your real photos go here.<br><span class="tmock">Rebuilt for $299 by SiteFix.</span></div></div></footer>'+
-  (phone?'<a class="tcallbar" href="'+phoneHref+'">Tap to call now</a>':"")+
-  '<script>document.getElementById("qform").addEventListener("submit",function(e){e.preventDefault();this.innerHTML="<h3 class=\'osw\' style=\'color:#0c1a2b\'>Got it.</h3><p>We\'ll call you back shortly. Thanks for reaching out.</p>";});<\/script>'+
-  '</body></html>';
+  const name=esc(d.name), phone=esc(d.phone||""), ph=esc(d.phoneHref||""),
+        city=esc(d.city||"Baton Rouge"),
+        tag=esc(d.tagline||"Repairs, installs, and maintenance — done right the first time, priced fair, no runaround."),
+        hours=esc(d.hours||"Call for today's hours"), addr=esc(d.address||"");
+  const svcs=(d.services&&d.services.length?d.services:["Repairs & service calls","Installations","Maintenance plans","Free estimates"]).slice(0,6).map(esc);
+  const cards=svcs.map(s=>'<div class="card"><div class="ic">'+IC.check+'</div><h3>'+s+'</h3><p>Upfront pricing and clean work, from a crew that shows up when they say they will.</p></div>').join("");
+  const callPill=phone?'<a class="callpill" href="'+ph+'">'+IC.phone+'<span>'+phone+'</span></a>':"";
+  const callBtn=phone?'<a class="btn primary" href="'+ph+'">'+IC.phone+' Call '+phone+'</a>':"";
+  const infoRows=(phone?'<div class="irow"><span class="iic">'+IC.phone+'</span><div><b>Call or text</b><span>'+phone+'</span></div></div>':"")
+    +(addr?'<div class="irow"><span class="iic">'+IC.pin+'</span><div><b>Find us</b><span>'+addr+'</span></div></div>':"")
+    +'<div class="irow"><span class="iic">'+IC.clock+'</span><div><b>Hours</b><span>'+hours+'</span></div></div>';
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'
+  +'*{margin:0;box-sizing:border-box}html{scroll-behavior:smooth}'
+  +'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#182539;background:#fff;line-height:1.6;-webkit-font-smoothing:antialiased}'
+  +'section{scroll-margin-top:76px}'
+  +'.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);border-bottom:1px solid #e9edf4;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 22px}'
+  +'.logo{font-weight:800;font-size:19px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+  +'.nlinks{display:flex;align-items:center;gap:22px}'
+  +'.nlinks a.nl{color:#43536f;text-decoration:none;font-size:15px;font-weight:500}'
+  +'.callpill{display:inline-flex;align-items:center;gap:8px;background:#f4571a;color:#fff;font-weight:700;font-size:15px;padding:10px 20px;border-radius:999px;text-decoration:none;white-space:nowrap}'
+  +'.hero{background:linear-gradient(180deg,#fff8f3 0%,#fff 70%)}'
+  +'.hwrap{max-width:1060px;margin:0 auto;padding:64px 22px 56px;display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}'
+  +'.eyebrow{color:#f4571a;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}'
+  +'.hero h1{font-size:clamp(36px,5.2vw,58px);line-height:1.06;letter-spacing:-.025em;font-weight:800;margin-bottom:16px}'
+  +'.hero .sub{color:#5b6b87;font-size:18px;max-width:44ch;margin-bottom:30px}'
+  +'.btnrow{display:flex;gap:12px;flex-wrap:wrap}'
+  +'.btn{display:inline-flex;align-items:center;gap:9px;padding:15px 28px;border-radius:13px;font-weight:700;font-size:16px;text-decoration:none}'
+  +'.btn.primary{background:#f4571a;color:#fff;box-shadow:0 10px 24px rgba(244,87,26,.28)}'
+  +'.btn.ghost{background:#fff;color:#182539;border:1.5px solid #dbe1ec}'
+  +'.hcard{background:#fff;border:1px solid #e9edf4;border-radius:20px;padding:30px;box-shadow:0 24px 60px rgba(20,35,65,.10)}'
+  +'.hcard h3{font-size:15px;text-transform:uppercase;letter-spacing:.1em;color:#8a97ad;margin-bottom:18px;font-weight:700}'
+  +'.irow{display:flex;gap:14px;padding:13px 0;border-top:1px solid #f0f3f8;align-items:flex-start}'
+  +'.irow:first-of-type{border-top:0}'
+  +'.iic{width:38px;height:38px;flex:none;border-radius:11px;background:#fff1e8;color:#f4571a;display:flex;align-items:center;justify-content:center}'
+  +'.irow b{display:block;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#8a97ad;font-weight:700}'
+  +'.irow span:last-child{font-size:16px;font-weight:600;color:#182539}'
+  +'.hcard .btn{width:100%;justify-content:center;margin-top:20px}'
+  +'.trust{border-top:1px solid #eef1f6;border-bottom:1px solid #eef1f6;background:#fbfcfe}'
+  +'.trust .in{max-width:1060px;margin:0 auto;padding:16px 22px;display:flex;gap:28px;flex-wrap:wrap;justify-content:center}'
+  +'.trust span{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;color:#33415c}'
+  +'.trust svg{color:#16a34a;flex:none}'
+  +'.sec{max-width:1060px;margin:0 auto;padding:68px 22px}'
+  +'.sec h2{font-size:clamp(27px,3.4vw,38px);letter-spacing:-.02em;font-weight:800;margin-bottom:10px}'
+  +'.lede{color:#5b6b87;font-size:17px;margin-bottom:32px;max-width:60ch}'
+  +'.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}'
+  +'.card{border:1px solid #e9edf4;border-radius:17px;padding:26px;background:#fff;transition:transform .15s}'
+  +'.card .ic{width:44px;height:44px;border-radius:13px;background:#fff1e8;color:#f4571a;display:flex;align-items:center;justify-content:center;margin-bottom:16px}'
+  +'.card h3{font-size:17px;font-weight:700;margin-bottom:6px}'
+  +'.card p{color:#5b6b87;font-size:14.5px}'
+  +'.band{max-width:1016px;margin:0 auto 8px;background:#f4571a;border-radius:22px;padding:52px 34px;text-align:center;color:#fff}'
+  +'.band h2{font-size:clamp(26px,3.6vw,40px);letter-spacing:-.02em;font-weight:800;margin-bottom:10px}'
+  +'.band p{opacity:.92;font-size:17px;margin-bottom:28px}'
+  +'.band .btn{background:#fff;color:#f4571a;box-shadow:none}'
+  +'.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:6px}'
+  +'.cform{background:#fbfcfe;border:1px solid #e9edf4;border-radius:18px;padding:28px}'
+  +'.cform h3{font-size:19px;font-weight:800;margin-bottom:4px}'
+  +'.cform p{color:#5b6b87;font-size:14.5px;margin-bottom:18px}'
+  +'.cform input,.cform textarea{width:100%;border:1.5px solid #dbe1ec;border-radius:11px;padding:13px 15px;font-size:16px;margin-bottom:12px;font-family:inherit}'
+  +'.cform input:focus,.cform textarea:focus{outline:none;border-color:#f4571a}'
+  +'.cform button{width:100%;border:0;cursor:pointer}'
+  +'.foot{background:#101b30;color:#aeb9cf;padding:40px 22px;text-align:center;font-size:14px}'
+  +'.foot b{color:#fff;font-size:16px}'
+  +'.foot .mock{display:block;margin-top:8px;color:#7c8aa3;font-size:13px}'
+  +'.callbar{display:none}'
+  +'@media(max-width:760px){body{padding-bottom:66px}.nlinks a.nl{display:none}.hwrap{grid-template-columns:1fr;padding:44px 20px 40px;gap:30px}.cards{grid-template-columns:1fr}.cgrid{grid-template-columns:1fr}.sec{padding:52px 20px}.logo{font-size:17px}.callpill{font-size:14px;padding:9px 16px}'
+  +'.callbar{display:flex;align-items:center;justify-content:center;gap:9px;position:fixed;left:0;right:0;bottom:0;z-index:60;background:#f4571a;color:#fff;font-weight:800;font-size:17px;padding:19px;text-decoration:none}}'
+  +'</style></head><body>'
+  +'<nav class="nav"><div class="logo">'+name+'</div><div class="nlinks"><a class="nl" href="#services">Services</a><a class="nl" href="#contact">Contact</a>'+callPill+'</div></nav>'
+  +'<header class="hero"><div class="hwrap"><div>'
+  +'<div class="eyebrow">'+city+', Louisiana</div>'
+  +'<h1>'+name+'</h1>'
+  +'<p class="sub">'+tag+'</p>'
+  +'<div class="btnrow">'+callBtn+'<a class="btn ghost" href="#contact">Get a free estimate '+IC.arrow+'</a></div>'
+  +'</div><aside class="hcard"><h3>Talk to a real person</h3>'+infoRows+callBtn+'</aside></div></header>'
+  +'<div class="trust"><div class="in"><span>'+IC.check+' Free estimates</span><span>'+IC.check+' Upfront pricing</span><span>'+IC.check+' Real humans answer</span></div></div>'
+  +'<section class="sec" id="services"><h2>What we do</h2><p class="lede">One call handles it — here\u2019s the short list.</p><div class="cards">'+cards+'</div></section>'
+  +'<div style="max-width:1060px;margin:0 auto;padding:0 22px"><div class="band" style="margin:0"><h2>Something broke? Don\u2019t wait on it.</h2><p>Small problems turn into big bills. Call now and we\u2019ll get you sorted.</p>'+callBtn+'</div></div>'
+  +'<section class="sec" id="contact"><h2>Get in touch</h2><p class="lede">Call, or send a note and we\u2019ll call you back — usually same day.</p>'
+  +'<div class="cgrid"><div>'+infoRows+'</div>'
+  +'<div class="cform"><h3>Get a free estimate</h3><p>Tell us what\u2019s going on.</p><form id="qform"><input required placeholder="Your name"><input required placeholder="Phone number" type="tel"><textarea rows="3" placeholder="What do you need done?"></textarea><button class="btn primary" type="submit">Send it '+IC.arrow+'</button></form></div>'
+  +'</div></section>'
+  +'<footer class="foot"><b>'+name+'</b><br>'+city+', Louisiana<span class="mock">Preview mockup — your real photos go here.<br>Rebuilt for $299 by SiteFix.</span></footer>'
+  +(phone?'<a class="callbar" href="'+ph+'">'+IC.phone+' Tap to call now</a>':"")
+  +'<script>document.getElementById("qform").addEventListener("submit",function(e){e.preventDefault();this.innerHTML="<h3>Got it.</h3><p>We\u2019ll call you back shortly. Thanks for reaching out.</p>";});<\/script>'
+  +'</body></html>';
 }
 
-/* ---------------- RESTAURANT ---------------- */
 function buildRestaurant(d){
-  const name = esc(d.name), city = esc(d.city);
-  const phone = d.phone, phoneHref = d.phoneHref;
-  const svcs = servicesFor(d,"restaurant");
-  const img = heroImg(d, "rest-"+name.length, 1600, 950);
-  const img2 = heroImg(d, "rest2-"+name.length, 900, 700);
-  const callBtn = phone
-    ? '<a class="rbtn" href="'+phoneHref+'">Call for a table</a>'
-    : '<a class="rbtn" href="#visit">Plan your visit</a>';
-  const menuItems = svcs.map(s =>
-    '<div class="ritem"><div class="rrow"><h3>'+esc(s)+'</h3><span class="dots"></span></div><p>'+esc(blurbFor(s))+'</p></div>'
-  ).join("");
-  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
-  '<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">'+
-  '<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;color:#2a2620;background:#faf5ea;line-height:1.65}'+
-  '.serif{font-family:"DM Serif Display",Georgia,serif;font-weight:400;line-height:1.12}'+
-  '.rw{max-width:1140px;margin:0 auto;padding:0 24px}'+
-  '.rnav{position:sticky;top:0;z-index:60;background:rgba(250,245,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid #e7dcc4}'+
-  '.rnav .rw{display:flex;align-items:center;justify-content:space-between;padding-top:16px;padding-bottom:16px}'+
-  '.rlogo{font-family:"DM Serif Display",serif;font-size:26px;color:#22402f}'+
-  '.rnav-links{display:flex;gap:28px;align-items:center}.rnav-links a.nl{color:#5c554a;text-decoration:none;font-size:14px;font-weight:600}.rnav-links a.nl:hover{color:#22402f}'+
-  '.rbtn{display:inline-block;background:#c08a2d;color:#fff;text-decoration:none;font-weight:700;font-size:16px;padding:15px 32px;border-radius:999px;border:none;cursor:pointer}'+
-  '.rbtn:hover{background:#a57624}.rbtn.oline{background:transparent;border:2px solid #fff;color:#fff}.rbtn.oline:hover{background:#fff;color:#22402f}'+
-  '.rbtn.nsm{padding:10px 22px;font-size:14px}'+
-  '.rhero{background:linear-gradient(rgba(24,38,29,.72),rgba(24,38,29,.55)),url("'+img+'") center/cover;color:#faf5ea;text-align:center;padding:130px 0 120px}'+
-  '.rkick{color:#e3b85c;font-weight:700;font-size:13px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:18px}'+
-  '.rhero h1{font-size:clamp(48px,7.5vw,92px);margin-bottom:14px}'+
-  '.rhero p.sub{font-size:20px;color:#efe6d2;max-width:600px;margin:0 auto 34px;font-style:italic;font-family:"DM Serif Display",serif}'+
-  '.rcta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}'+
-  '.rsec{padding:88px 0}.rsec h2{font-size:clamp(32px,4.5vw,52px);color:#22402f;text-align:center;margin-bottom:6px}'+
-  '.rsec .lede{text-align:center;color:#7a7264;font-size:18px;margin-bottom:48px;font-style:italic;font-family:"DM Serif Display",serif}'+
-  '.rmenu{display:grid;grid-template-columns:1fr 1fr;gap:34px 56px;max-width:920px;margin:0 auto}'+
-  '.ritem .rrow{display:flex;align-items:baseline;gap:10px}.ritem h3{font-family:"DM Serif Display",serif;font-size:23px;color:#22402f;white-space:nowrap}'+
-  '.ritem .dots{flex:1;border-bottom:2px dotted #c9b98f;transform:translateY(-6px)}'+
-  '.ritem p{color:#7a7264;font-size:15px;margin-top:4px}'+
-  '.rinfo{background:#22402f;color:#efe6d2}.rinfo .rw{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-top:70px;padding-bottom:70px}'+
-  '.ricard{text-align:center;padding:10px}.ricard .ic{width:46px;height:46px;margin:0 auto 14px;color:#e3b85c}.ricard .ic svg{width:100%;height:100%}'+
-  '.ricard h3{font-family:"DM Serif Display",serif;font-size:22px;margin-bottom:6px;color:#faf5ea}.ricard p{color:#b9ac8d;font-size:15px}.ricard a{color:#e3b85c;font-weight:700;text-decoration:none;font-size:17px}'+
-  '.rabout .rw{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}'+
-  '.rabout img{width:100%;border-radius:14px;box-shadow:0 24px 60px rgba(34,64,47,.18)}'+
-  '.rabout h2{text-align:left;margin-bottom:16px}.rabout p{color:#5c554a;font-size:17px;margin-bottom:16px}'+
-  '.rband{background:#c08a2d;color:#fff;text-align:center;padding:70px 0}'+
-  '.rband h2{font-size:clamp(28px,4.5vw,48px);margin-bottom:10px}.rband p{font-size:18px;margin-bottom:26px;color:#fdf6e3}'+
-  '.rband .rbtn{background:#22402f}.rband .rbtn:hover{background:#16291d}'+
-  '.rfoot{background:#182619;color:#8d8268;padding:46px 0;font-size:14px;text-align:center}.rfoot .rlogo{color:#faf5ea;margin-bottom:8px;display:block}'+
-  '@media(max-width:820px){.rmenu{grid-template-columns:1fr}.rinfo .rw{grid-template-columns:1fr}.rabout .rw{grid-template-columns:1fr}.rnav-links a.nl{display:none}.rsec{padding:60px 0}}'+
-  '</style></head><body>'+
-  '<nav class="rnav"><div class="rw"><div class="rlogo">'+name+'</div><div class="rnav-links"><a class="nl" href="#menu">Menu</a><a class="nl" href="#visit">Visit</a>'+(phone?'<a class="rbtn nsm" href="'+phoneHref+'">Call</a>':"")+'</div></div></nav>'+
-  '<header class="rhero"><div class="rw"><div class="rkick">A '+city+' favorite</div><h1 class="serif">'+name+'</h1>'+
-  '<p class="sub">Real food, real portions, no pretense. Come hungry.</p>'+
-  '<div class="rcta-row"><a class="rbtn oline" href="#menu">See the menu</a>'+callBtn+'</div></div></header>'+
-  '<section class="rsec" id="menu"><div class="rw"><h2 class="serif">The Hits</h2><p class="lede">what the regulars order</p><div class="rmenu">'+menuItems+'</div></div></section>'+
-  '<section class="rinfo" id="visit"><div class="rw">'+
-  '<div class="ricard"><div class="ic">'+icon("pin")+'</div><h3>Find us</h3><p>'+(d.address?esc(d.address)+'<br>':"")+city+', Louisiana</p></div>'+
-  '<div class="ricard"><div class="ic">'+icon("phone")+'</div><h3>Call ahead</h3>'+(phone?'<a href="'+phoneHref+'">'+esc(phone)+'</a>':"<p>Call for today's hours</p>")+'</div>'+
-  '<div class="ricard"><div class="ic">'+icon("clock")+'</div><h3>Hours</h3><p>Call for today\'s hours —<br>we keep it simple.</p></div>'+
-  '</div></section>'+
-  '<section class="rsec rabout"><div class="rw"><img src="'+img2+'" alt="'+name+'">'+
-  '<div><h2 class="serif">Been feeding '+city+' right.</h2><p>No frozen shortcuts, no tiny portions, no attitude. Just the kind of plate that keeps people coming back — and bringing their people with them.</p><p>Bring the family. Bring an appetite. We\'ll handle the rest.</p><div style="margin-top:26px">'+callBtn+'</div></div></div></section>'+
-  '<section class="rband"><div class="rw"><h2 class="serif">Feeding a crowd? We cater.</h2><p>Office lunches, family gatherings, game day — you name it.</p>'+(phone?'<a class="rbtn" href="'+phoneHref+'">Call '+esc(phone)+'</a>':'<a class="rbtn" href="#visit">Get in touch</a>')+'</div></section>'+
-  '<footer class="rfoot"><div class="rw"><span class="rlogo">'+name+'</span><div>'+city+', Louisiana &middot; Preview mockup — your real photos go here.<br>Rebuilt for $299 by SiteFix.</div></div></footer>'+
-  '</body></html>';
+  const name=esc(d.name), phone=esc(d.phone||""), ph=esc(d.phoneHref||""),
+        city=esc(d.city||"Baton Rouge"),
+        tag=esc(d.tagline||"Good food, honest prices, and a room that feels like home."),
+        hours=esc(d.hours||"Call for today's hours"), addr=esc(d.address||"");
+  const svcs=(d.services&&d.services.length?d.services:["Dine-in","Takeout","Family platters","Daily specials"]).slice(0,6).map(esc);
+  const cards=svcs.map(s=>'<div class="card"><h3>'+s+'</h3><p>Made fresh, served with a smile — the way it\u2019s always been.</p></div>').join("");
+  const callPill=phone?'<a class="callpill" href="'+ph+'">'+IC.phone+'<span>'+phone+'</span></a>':"";
+  const callBtn=phone?'<a class="btn primary" href="'+ph+'">'+IC.phone+' Call '+phone+'</a>':"";
+  const infoRow=(phone?'<div class="ii"><span class="iic">'+IC.phone+'</span><div><b>Call ahead</b><span>'+phone+'</span></div></div>':"")
+    +(addr?'<div class="ii"><span class="iic">'+IC.pin+'</span><div><b>Find us</b><span>'+addr+'</span></div></div>':"")
+    +'<div class="ii"><span class="iic">'+IC.clock+'</span><div><b>Hours</b><span>'+hours+'</span></div></div>';
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'
+  +'*{margin:0;box-sizing:border-box}html{scroll-behavior:smooth}'
+  +'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#2e241a;background:#faf6ee;line-height:1.6;-webkit-font-smoothing:antialiased}'
+  +'section{scroll-margin-top:76px}'
+  +'h1,h2,.serif{font-family:Georgia,"Times New Roman",serif}'
+  +'.nav{position:sticky;top:0;z-index:50;background:rgba(250,246,238,.97);border-bottom:1px solid #e7ddc9;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 22px}'
+  +'.logo{font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:21px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+  +'.nlinks{display:flex;align-items:center;gap:22px}'
+  +'.nlinks a.nl{color:#6b5d4b;text-decoration:none;font-size:15px;font-weight:500}'
+  +'.callpill{display:inline-flex;align-items:center;gap:8px;background:#b3261e;color:#fff;font-weight:700;font-size:15px;padding:10px 20px;border-radius:999px;text-decoration:none;white-space:nowrap}'
+  +'.hero{text-align:center;padding:76px 22px 60px;background:radial-gradient(ellipse 70% 55% at 50% 0%,#f3e8d2 0%,#faf6ee 70%)}'
+  +'.eyebrow{color:#b3261e;font-weight:700;font-size:13px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:16px}'
+  +'.hero h1{font-size:clamp(42px,7vw,72px);line-height:1.04;letter-spacing:-.01em;font-weight:700;margin-bottom:16px}'
+  +'.hero .sub{color:#6b5d4b;font-size:19px;max-width:52ch;margin:0 auto 32px}'
+  +'.btnrow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}'
+  +'.btn{display:inline-flex;align-items:center;gap:9px;padding:15px 30px;border-radius:999px;font-weight:700;font-size:16px;text-decoration:none}'
+  +'.btn.primary{background:#b3261e;color:#fff;box-shadow:0 10px 24px rgba(179,38,30,.25)}'
+  +'.btn.ghost{background:transparent;color:#2e241a;border:1.5px solid #cbbd9f}'
+  +'.info{max-width:960px;margin:0 auto;padding:0 22px 8px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}'
+  +'.ii{background:#fff;border:1px solid #e7ddc9;border-radius:16px;padding:20px;display:flex;gap:13px;align-items:flex-start}'
+  +'.iic{width:38px;height:38px;flex:none;border-radius:50%;background:#fbeeea;color:#b3261e;display:flex;align-items:center;justify-content:center}'
+  +'.ii b{display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:.09em;color:#9a8a6f;font-weight:700}'
+  +'.ii span:last-child{font-size:15.5px;font-weight:600}'
+  +'.sec{max-width:1060px;margin:0 auto;padding:68px 22px}'
+  +'.sec h2{font-size:clamp(30px,4vw,44px);font-weight:700;margin-bottom:8px;text-align:center}'
+  +'.lede{color:#6b5d4b;font-size:17px;margin-bottom:34px;text-align:center}'
+  +'.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:860px;margin:0 auto}'
+  +'.card{background:#fff;border:1px solid #e7ddc9;border-radius:17px;padding:28px;text-align:center}'
+  +'.card h3{font-size:21px;margin-bottom:6px}'
+  +'.card p{color:#6b5d4b;font-size:15px}'
+  +'.band{max-width:1016px;margin:0 auto;background:#2e241a;border-radius:22px;padding:56px 34px;text-align:center;color:#f7f1e3}'
+  +'.band h2{font-size:clamp(28px,4vw,42px);margin-bottom:10px;color:#fff}'
+  +'.band p{color:#cbbfa5;font-size:17px;margin-bottom:28px}'
+  +'.band .btn{background:#b3261e;color:#fff;box-shadow:none}'
+  +'.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:36px;max-width:960px;margin:0 auto}'
+  +'.cform{background:#fff;border:1px solid #e7ddc9;border-radius:18px;padding:28px}'
+  +'.cform h3{font-size:20px;margin-bottom:4px}'
+  +'.cform p{color:#6b5d4b;font-size:14.5px;margin-bottom:18px}'
+  +'.cform input,.cform textarea{width:100%;border:1.5px solid #ddd2b8;border-radius:11px;padding:13px 15px;font-size:16px;margin-bottom:12px;font-family:inherit;background:#fffdf8}'
+  +'.cform input:focus,.cform textarea:focus{outline:none;border-color:#b3261e}'
+  +'.cform button{width:100%;border:0;cursor:pointer}'
+  +'.foot{background:#241c12;color:#b8a98c;padding:40px 22px;text-align:center;font-size:14px}'
+  +'.foot b{color:#fff;font-size:16px;font-family:Georgia,serif}'
+  +'.foot .mock{display:block;margin-top:8px;color:#8a7a5f;font-size:13px}'
+  +'.callbar{display:none}'
+  +'@media(max-width:760px){body{padding-bottom:66px}.nlinks a.nl{display:none}.info{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.cgrid{grid-template-columns:1fr}.sec{padding:52px 20px}.hero{padding:56px 20px 44px}'
+  +'.callbar{display:flex;align-items:center;justify-content:center;gap:9px;position:fixed;left:0;right:0;bottom:0;z-index:60;background:#b3261e;color:#fff;font-weight:800;font-size:17px;padding:19px;text-decoration:none}}'
+  +'</style></head><body>'
+  +'<nav class="nav"><div class="logo">'+name+'</div><div class="nlinks"><a class="nl" href="#known">Favorites</a><a class="nl" href="#visit">Visit</a>'+callPill+'</div></nav>'
+  +'<header class="hero"><div class="eyebrow">'+city+', Louisiana</div><h1>'+name+'</h1><p class="sub">'+tag+'</p>'
+  +'<div class="btnrow">'+callBtn+(addr?'<a class="btn ghost" href="#visit">Hours &amp; directions '+IC.arrow+'</a>':"")+'</div></header>'
+  +'<div class="info">'+infoRow+'</div>'
+  +'<section class="sec" id="known"><h2>What we\u2019re known for</h2><p class="lede">The plates people drive across town for.</p><div class="cards">'+cards+'</div></section>'
+  +'<div style="max-width:1060px;margin:0 auto;padding:0 22px"><div class="band" style="margin:0"><h2>Hungry? Skip the wait.</h2><p>Call ahead and we\u2019ll have it hot when you walk in.</p>'+callBtn+'</div></div>'
+  +'<section class="sec" id="visit"><h2>Come see us</h2><p class="lede">We\u2019d love to feed you.</p><div class="cgrid"><div>'+infoRow+'</div>'
+  +'<div class="cform"><h3 class="serif">Book a table</h3><p>For parties of 6 or more.</p><form id="qform"><input required placeholder="Your name"><input required placeholder="Phone number" type="tel"><textarea rows="3" placeholder="Date, time, party size\u2026"></textarea><button class="btn primary" type="submit">Request table '+IC.arrow+'</button></form></div>'
+  +'</div></section>'
+  +'<footer class="foot"><b>'+name+'</b><br>'+city+', Louisiana<span class="mock">Preview mockup — your real photos go here.<br>Rebuilt for $299 by SiteFix.</span></footer>'
+  +(phone?'<a class="callbar" href="'+ph+'">'+IC.phone+' Tap to call now</a>':"")
+  +'<script>document.getElementById("qform").addEventListener("submit",function(e){e.preventDefault();this.innerHTML="<h3>Got it.</h3><p>We\u2019ll confirm your table shortly. Thanks!</p>";});<\/script>'
+  +'</body></html>';
 }
 
-/* ---------------- PROFESSIONAL ---------------- */
 function buildProfessional(d){
-  const name = esc(d.name), city = esc(d.city);
-  const phone = d.phone, phoneHref = d.phoneHref;
-  const svcs = servicesFor(d,"professional");
-  const img = heroImg(d, "pro-"+name.length, 900, 1050);
-  const callBtn = phone
-    ? '<a class="pbtn" href="'+phoneHref+'">Call '+esc(phone)+'</a>'
-    : '<a class="pbtn" href="#contact">Request an appointment</a>';
-  const svcCards = svcs.map(s =>
-    '<div class="psvc"><div class="psvc-ic">'+icon(svcIcon(s,"professional"))+'</div><h3>'+esc(s)+'</h3><p>'+esc(blurbFor(s))+'</p></div>'
-  ).join("");
-  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
-  '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">'+
-  '<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;color:#17272b;background:#fff;line-height:1.65}'+
-  '.pw{max-width:1140px;margin:0 auto;padding:0 24px}'+
-  '.pnav{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid #e3eceb}'+
-  '.pnav .pw{display:flex;align-items:center;justify-content:space-between;padding-top:15px;padding-bottom:15px}'+
-  '.plogo{font-weight:800;font-size:20px;color:#0d4f48;letter-spacing:-.01em}'+
-  '.pnav-links{display:flex;gap:26px;align-items:center}.pnav-links a.nl{color:#5c6f72;text-decoration:none;font-size:14px;font-weight:600}.pnav-links a.nl:hover{color:#0d4f48}'+
-  '.pbtn{display:inline-block;background:#0d4f48;color:#fff;text-decoration:none;font-weight:700;font-size:16px;padding:15px 30px;border-radius:10px;border:none;cursor:pointer}'+
-  '.pbtn:hover{background:#093832}.pbtn.oline{background:#fff;border:2px solid #0d4f48;color:#0d4f48}.pbtn.oline:hover{background:#0d4f48;color:#fff}'+
-  '.pbtn.nsm{padding:10px 20px;font-size:14px}'+
-  '.phero{background:linear-gradient(180deg,#f2f8f7,#fff);padding:90px 0 80px;overflow:hidden}'+
-  '.phero .pw{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}'+
-  '.peyebrow{color:#14907f;font-weight:800;font-size:12px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:16px}'+
-  '.phero h1{font-size:clamp(36px,5vw,58px);font-weight:800;letter-spacing:-.02em;line-height:1.12;margin-bottom:18px;color:#0e2a27}'+
-  '.phero p.sub{font-size:19px;color:#5c6f72;max-width:520px;margin-bottom:32px}'+
-  '.pcta-row{display:flex;gap:14px;flex-wrap:wrap}'+
-  '.phero-img{position:relative}.phero-img img{width:100%;border-radius:18px;box-shadow:0 30px 70px rgba(13,79,72,.18)}'+
-  '.pbadge{position:absolute;left:-18px;bottom:34px;background:#fff;border-radius:14px;box-shadow:0 16px 40px rgba(13,79,72,.16);padding:16px 20px;display:flex;gap:12px;align-items:center}'+
-  '.pbadge .ic{width:42px;height:42px;background:#e2f2ef;color:#0d4f48;border-radius:10px;padding:10px}'+
-  '.pbadge b{display:block;font-size:15px}.pbadge span{font-size:13px;color:#5c6f72}'+
-  '.ptrust{border-top:1px solid #e3eceb;border-bottom:1px solid #e3eceb;background:#fff}.ptrust .pw{display:flex;flex-wrap:wrap;gap:10px 40px;justify-content:center;padding-top:18px;padding-bottom:18px}'+
-  '.ptrust span{display:flex;align-items:center;gap:9px;font-weight:600;font-size:15px;color:#0e2a27}.ptrust svg{width:20px;height:20px;color:#14907f}'+
-  '.psec{padding:84px 0}.psec.soft{background:#f2f8f7}'+
-  '.psec h2{font-size:clamp(30px,4vw,44px);font-weight:800;letter-spacing:-.02em;color:#0e2a27;margin-bottom:10px}'+
-  '.psec .lede{color:#5c6f72;font-size:18px;margin-bottom:44px;max-width:620px}'+
-  '.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}'+
-  '.psvc{background:#fff;border:1px solid #e3eceb;border-radius:14px;padding:30px 26px}'+
-  '.psvc:hover{box-shadow:0 16px 40px rgba(13,79,72,.1);border-color:#cfe3e0}'+
-  '.psvc-ic{width:50px;height:50px;background:#e2f2ef;color:#0d4f48;border-radius:12px;padding:12px;margin-bottom:18px}'+
-  '.psvc h3{font-size:18px;margin-bottom:8px}.psvc p{color:#5c6f72;font-size:15px}'+
-  '.psteps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}'+
-  '.pstep{background:#0d4f48;color:#fff;border-radius:14px;padding:34px 28px}'+
-  '.pstep .n{font-size:15px;font-weight:800;color:#7fd1c2;letter-spacing:.14em;margin-bottom:10px}'+
-  '.pstep h3{font-size:21px;margin-bottom:8px}.pstep p{color:#bcd6d1;font-size:15px}'+
-  '.pcontact .pw{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}'+
-  '.pccard{border:1px solid #e3eceb;border-radius:14px;padding:32px 28px;text-align:center}'+
-  '.pccard .ic{width:52px;height:52px;margin:0 auto 16px;background:#e2f2ef;color:#0d4f48;border-radius:14px;padding:13px}'+
-  '.pccard h3{font-size:19px;margin-bottom:6px}.pccard p{color:#5c6f72;font-size:15px;margin-bottom:16px}.pccard a{color:#0d4f48;font-weight:800;font-size:18px;text-decoration:none}'+
-  '.pfoot{background:#0a2b27;color:#8faaa5;padding:44px 0;font-size:14px}.pfoot .pw{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}'+
-  '.pfoot b{color:#fff}'+
-  '@media(max-width:860px){.phero .pw{grid-template-columns:1fr}.pgrid,.psteps,.pcontact .pw{grid-template-columns:1fr}.pnav-links a.nl{display:none}.psec{padding:60px 0}.pbadge{left:10px}}'+
-  '</style></head><body>'+
-  '<nav class="pnav"><div class="pw"><div class="plogo">'+name+'</div><div class="pnav-links"><a class="nl" href="#services">Services</a><a class="nl" href="#visit">Visit</a><a class="nl" href="#contact">Contact</a>'+(phone?'<a class="pbtn nsm" href="'+phoneHref+'">Call now</a>':"")+'</div></div></nav>'+
-  '<header class="phero"><div class="pw"><div>'+
-  '<div class="peyebrow">'+city+' &middot; Louisiana</div><h1>'+name+'</h1>'+
-  '<p class="sub">Straight answers, fair prices, and appointments that actually start on time. That\'s the whole pitch.</p>'+
-  '<div class="pcta-row">'+callBtn+'<a class="pbtn oline" href="#services">See services</a></div></div>'+
-  '<div class="phero-img"><img src="'+img+'" alt="'+name+'"><div class="pbadge"><div class="ic">'+icon("pin")+'</div><div><b>Serving '+city+'</b><span>Local &amp; independent</span></div></div></div>'+
-  '</div></header>'+
-  '<div class="ptrust"><div class="pw"><span>'+icon("check")+'Easy scheduling</span><span>'+icon("check")+'Clear, upfront pricing</span><span>'+icon("check")+'Real humans answer the phone</span></div></div>'+
-  '<section class="psec soft" id="services"><div class="pw"><h2>Services</h2><p class="lede">Everything we do, in plain English:</p><div class="pgrid">'+svcCards+'</div></div></section>'+
-  '<section class="psec" id="visit"><div class="pw"><h2>How it works</h2><p class="lede">Three steps. No paperwork marathons.</p><div class="psteps">'+
-  '<div class="pstep"><div class="n">STEP 1</div><h3>Call or message</h3><p>Tell us what you need. A real person answers and gives it to you straight.</p></div>'+
-  '<div class="pstep"><div class="n">STEP 2</div><h3>Come see us</h3><p>Easy to find, easy parking, appointments that start when they\'re supposed to.</p></div>'+
-  '<div class="pstep"><div class="n">STEP 3</div><h3>Done right</h3><p>No surprises on the bill. If something\'s not right, we make it right.</p></div>'+
-  '</div></div></section>'+
-  '<section class="psec soft" id="contact"><div class="pw"><h2 style="text-align:center">Get in touch</h2><p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">Questions? Call. We pick up.</p><div class="pcontact"><div class="pw">'+
-  '<div class="pccard"><div class="ic">'+icon("phone")+'</div><h3>Call</h3><p>Fastest way to reach us.</p>'+(phone?'<a href="'+phoneHref+'">'+esc(phone)+'</a>':"<p>Number coming soon</p>")+'</div>'+
-  '<div class="pccard"><div class="ic">'+icon("pin")+'</div><h3>Visit</h3><p>'+(d.address?esc(d.address)+"<br>":"")+city+', Louisiana</p></div>'+
-  '<div class="pccard"><div class="ic">'+icon("clock")+'</div><h3>Hours</h3><p>Call for today\'s hours.</p></div>'+
-  '</div></div></div></section>'+
-  '<footer class="pfoot"><div class="pw"><div><b>'+name+'</b><br>'+city+', Louisiana</div><div style="text-align:right">Preview mockup — your real photos go here.<br>Rebuilt for $299 by SiteFix.</div></div></footer>'+
-  '</body></html>';
+  const name=esc(d.name), phone=esc(d.phone||""), ph=esc(d.phoneHref||""),
+        city=esc(d.city||"Baton Rouge"),
+        tag=esc(d.tagline||"Careful, honest work from people who treat you like a neighbor — because you are one."),
+        hours=esc(d.hours||"Call for today's hours"), addr=esc(d.address||"");
+  const svcs=(d.services&&d.services.length?d.services:["Consultations","Exams & evaluations","Treatment plans","Follow-up care"]).slice(0,6).map(esc);
+  const cards=svcs.map(s=>'<div class="card"><div class="ic">'+IC.check+'</div><div><h3>'+s+'</h3><p>Explained in plain English, priced upfront, never rushed.</p></div></div>').join("");
+  const callPill=phone?'<a class="callpill" href="'+ph+'">'+IC.phone+'<span>'+phone+'</span></a>':"";
+  const callBtn=phone?'<a class="btn primary" href="'+ph+'">'+IC.phone+' Call '+phone+'</a>':"";
+  const infoRows=(phone?'<div class="irow"><span class="iic">'+IC.phone+'</span><div><b>Call us</b><span>'+phone+'</span></div></div>':"")
+    +(addr?'<div class="irow"><span class="iic">'+IC.pin+'</span><div><b>Visit</b><span>'+addr+'</span></div></div>':"")
+    +'<div class="irow"><span class="iic">'+IC.clock+'</span><div><b>Hours</b><span>'+hours+'</span></div></div>';
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'
+  +'*{margin:0;box-sizing:border-box}html{scroll-behavior:smooth}'
+  +'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1b2a4a;background:#fff;line-height:1.65;-webkit-font-smoothing:antialiased}'
+  +'section{scroll-margin-top:76px}'
+  +'.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);border-bottom:1px solid #e6ecf6;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 22px}'
+  +'.logo{font-weight:800;font-size:19px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+  +'.nlinks{display:flex;align-items:center;gap:22px}'
+  +'.nlinks a.nl{color:#4c5f82;text-decoration:none;font-size:15px;font-weight:500}'
+  +'.callpill{display:inline-flex;align-items:center;gap:8px;background:#1d5fd6;color:#fff;font-weight:700;font-size:15px;padding:10px 20px;border-radius:999px;text-decoration:none;white-space:nowrap}'
+  +'.hero{background:linear-gradient(180deg,#f2f7ff 0%,#fff 75%)}'
+  +'.hwrap{max-width:1060px;margin:0 auto;padding:72px 22px 60px;display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}'
+  +'.eyebrow{color:#1d5fd6;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}'
+  +'.hero h1{font-size:clamp(36px,5vw,56px);line-height:1.08;letter-spacing:-.025em;font-weight:800;margin-bottom:16px}'
+  +'.hero .sub{color:#5b6f95;font-size:18px;max-width:46ch;margin-bottom:30px}'
+  +'.btnrow{display:flex;gap:12px;flex-wrap:wrap}'
+  +'.btn{display:inline-flex;align-items:center;gap:9px;padding:15px 28px;border-radius:13px;font-weight:700;font-size:16px;text-decoration:none}'
+  +'.btn.primary{background:#1d5fd6;color:#fff;box-shadow:0 10px 24px rgba(29,95,214,.28)}'
+  +'.btn.ghost{background:#fff;color:#1b2a4a;border:1.5px solid #d7e1f2}'
+  +'.hcard{background:#fff;border:1px solid #e6ecf6;border-radius:20px;padding:30px;box-shadow:0 24px 60px rgba(25,55,110,.10)}'
+  +'.hcard h3{font-size:15px;text-transform:uppercase;letter-spacing:.1em;color:#8a99b8;margin-bottom:18px;font-weight:700}'
+  +'.irow{display:flex;gap:14px;padding:13px 0;border-top:1px solid #eef2f9;align-items:flex-start}'
+  +'.irow:first-of-type{border-top:0}'
+  +'.iic{width:38px;height:38px;flex:none;border-radius:11px;background:#e9f1fd;color:#1d5fd6;display:flex;align-items:center;justify-content:center}'
+  +'.irow b{display:block;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#8a99b8;font-weight:700}'
+  +'.irow span:last-child{font-size:16px;font-weight:600;color:#1b2a4a}'
+  +'.hcard .btn{width:100%;justify-content:center;margin-top:20px}'
+  +'.trust{border-top:1px solid #edf1f8;border-bottom:1px solid #edf1f8;background:#fafcff}'
+  +'.trust .in{max-width:1060px;margin:0 auto;padding:16px 22px;display:flex;gap:28px;flex-wrap:wrap;justify-content:center}'
+  +'.trust span{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;color:#33456b}'
+  +'.trust svg{color:#16a34a;flex:none}'
+  +'.sec{max-width:1060px;margin:0 auto;padding:68px 22px}'
+  +'.sec h2{font-size:clamp(27px,3.4vw,38px);letter-spacing:-.02em;font-weight:800;margin-bottom:10px}'
+  +'.lede{color:#5b6f95;font-size:17px;margin-bottom:32px;max-width:60ch}'
+  +'.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}'
+  +'.card{border:1px solid #e6ecf6;border-radius:17px;padding:24px;background:#fff;display:flex;gap:16px;align-items:flex-start}'
+  +'.card .ic{width:44px;height:44px;flex:none;border-radius:13px;background:#e9f1fd;color:#1d5fd6;display:flex;align-items:center;justify-content:center}'
+  +'.card h3{font-size:17px;font-weight:700;margin-bottom:4px}'
+  +'.card p{color:#5b6f95;font-size:14.5px}'
+  +'.band{max-width:1016px;margin:0 auto;background:#16294d;border-radius:22px;padding:52px 34px;text-align:center;color:#dbe6fa}'
+  +'.band h2{font-size:clamp(26px,3.6vw,40px);letter-spacing:-.02em;font-weight:800;margin-bottom:10px;color:#fff}'
+  +'.band p{opacity:.85;font-size:17px;margin-bottom:28px}'
+  +'.band .btn{background:#fff;color:#1d5fd6;box-shadow:none}'
+  +'.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:6px}'
+  +'.cform{background:#fafcff;border:1px solid #e6ecf6;border-radius:18px;padding:28px}'
+  +'.cform h3{font-size:19px;font-weight:800;margin-bottom:4px}'
+  +'.cform p{color:#5b6f95;font-size:14.5px;margin-bottom:18px}'
+  +'.cform input,.cform textarea{width:100%;border:1.5px solid #d7e1f2;border-radius:11px;padding:13px 15px;font-size:16px;margin-bottom:12px;font-family:inherit}'
+  +'.cform input:focus,.cform textarea:focus{outline:none;border-color:#1d5fd6}'
+  +'.cform button{width:100%;border:0;cursor:pointer}'
+  +'.foot{background:#101d36;color:#a9badb;padding:40px 22px;text-align:center;font-size:14px}'
+  +'.foot b{color:#fff;font-size:16px}'
+  +'.foot .mock{display:block;margin-top:8px;color:#7c8fae;font-size:13px}'
+  +'.callbar{display:none}'
+  +'@media(max-width:760px){body{padding-bottom:66px}.nlinks a.nl{display:none}.hwrap{grid-template-columns:1fr;padding:48px 20px 44px;gap:30px}.cards{grid-template-columns:1fr}.cgrid{grid-template-columns:1fr}.sec{padding:52px 20px}.logo{font-size:17px}.callpill{font-size:14px;padding:9px 16px}'
+  +'.callbar{display:flex;align-items:center;justify-content:center;gap:9px;position:fixed;left:0;right:0;bottom:0;z-index:60;background:#1d5fd6;color:#fff;font-weight:800;font-size:17px;padding:19px;text-decoration:none}}'
+  +'</style></head><body>'
+  +'<nav class="nav"><div class="logo">'+name+'</div><div class="nlinks"><a class="nl" href="#services">Services</a><a class="nl" href="#contact">Contact</a>'+callPill+'</div></nav>'
+  +'<header class="hero"><div class="hwrap"><div>'
+  +'<div class="eyebrow">'+city+', Louisiana</div>'
+  +'<h1>'+name+'</h1>'
+  +'<p class="sub">'+tag+'</p>'
+  +'<div class="btnrow">'+callBtn+'<a class="btn ghost" href="#contact">Request an appointment '+IC.arrow+'</a></div>'
+  +'</div><aside class="hcard"><h3>Visit us</h3>'+infoRows+callBtn+'</aside></div></header>'
+  +'<div class="trust"><div class="in"><span>'+IC.check+' Plain-English explanations</span><span>'+IC.check+' Upfront pricing</span><span>'+IC.check+' Never rushed</span></div></div>'
+  +'<section class="sec" id="services"><h2>How we can help</h2><p class="lede">Straightforward care, start to finish.</p><div class="cards">'+cards+'</div></section>'
+  +'<div style="max-width:1060px;margin:0 auto;padding:0 22px"><div class="band" style="margin:0"><h2>Ready when you are.</h2><p>Booking takes less than a minute — call or send a note and we\u2019ll take it from there.</p>'+callBtn+'</div></div>'
+  +'<section class="sec" id="contact"><h2>Get in touch</h2><p class="lede">Questions first? That\u2019s what we\u2019re here for.</p>'
+  +'<div class="cgrid"><div>'+infoRows+'</div>'
+  +'<div class="cform"><h3>Request an appointment</h3><p>We\u2019ll confirm your time shortly.</p><form id="qform"><input required placeholder="Your name"><input required placeholder="Phone number" type="tel"><textarea rows="3" placeholder="What can we help with?"></textarea><button class="btn primary" type="submit">Send request '+IC.arrow+'</button></form></div>'
+  +'</div></section>'
+  +'<footer class="foot"><b>'+name+'</b><br>'+city+', Louisiana<span class="mock">Preview mockup — your real photos go here.<br>Rebuilt for $299 by SiteFix.</span></footer>'
+  +(phone?'<a class="callbar" href="'+ph+'">'+IC.phone+' Tap to call now</a>':"")
+  +'<script>document.getElementById("qform").addEventListener("submit",function(e){e.preventDefault();this.innerHTML="<h3>Got it.</h3><p>We\u2019ll be in touch shortly. Thanks for reaching out.</p>";});<\/script>'
+  +'</body></html>';
 }
 
 const BUILDERS = { trades: buildTrades, restaurant: buildRestaurant, professional: buildProfessional };
